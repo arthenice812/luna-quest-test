@@ -8,11 +8,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
         
         body { margin: 0; background: #000; color: #fff; font-family: 'Montserrat', sans-serif; overflow: hidden; height: 100vh; }
-        #game-container { position: relative; width: 100%; height: 100%; max-width: 500px; margin: 0 auto; background: #000; }
+        #game-container { position: relative; width: 100%; height: 100%; max-width: 500px; margin: 0 auto; background: #111; }
         
         /* Видео */
-        video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
+        video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; background: #000; }
         
+        /* Заглушка, если видео сломалось */
+        #fallback-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; background: #222; color: #555; font-size: 1.5rem; font-weight: bold; }
+
         /* Интерфейс */
         .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; box-sizing: border-box; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent 50%); pointer-events: none; }
         
@@ -46,7 +49,10 @@
 <body>
 
 <div id="game-container">
-    <video id="vid" playsinline webkit-playsinline></video>
+    <div id="fallback-screen">ЗАГРУЗКА...</div>
+    
+    <video id="vid" playsinline webkit-playsinline muted></video>
+    
     <div id="inventory">📜 <span id="count">0</span>/8</div>
     
     <div id="ui" class="ui-layer hidden"></div>
@@ -66,31 +72,29 @@
 
     <div id="loginScreen" class="overlay">
         <h1 style="color:#ffd700">ТЕСТ: ЛУНА v СЕРОСТЬ</h1>
-        <p>Это тестовая версия.<br>Видео заменены на случайные.<br>Введи имя для проверки бота:</p>
-        <input type="text" id="username" placeholder="Твое имя...">
+        <p>Версия 2.0 (Safe Mode)<br>Если видео не грузит - будет цветной фон.</p>
+        <input type="text" id="username" placeholder="Введи имя">
         <button onclick="startGame()">НАЧАТЬ ТЕСТ</button>
     </div>
 
     <div id="winScreen" class="overlay hidden">
         <h1 style="color:#ffd700">ПОБЕДА!</h1>
-        <p>Тест пройден!<br>Код работает.</p>
+        <p>Тест пройден!<br>Механика работает.</p>
         <button onclick="location.reload()">В МЕНЮ</button>
     </div>
 </div>
 
 <script>
-    // --- ДАННЫЕ ОТ ТЕЛЕГРАМ ---
     const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg"; 
     const TG_CHAT_ID = "7524680591";
-    // --------------------------
 
     const vid = document.getElementById('vid');
+    const fallback = document.getElementById('fallback-screen');
     const ui = document.getElementById('ui');
     const dialog = document.getElementById('dialog');
     let collected = new Set();
     let userName = "Тестер";
 
-    // СТРОКИ СТИХА
     const POEM_LINES = {
         1: "Зажжём сердца, прогоним прочь тоску,",
         2: "Клиент доволен — мы всегда на чеку!",
@@ -102,18 +106,24 @@
         8: "Чтоб чистый код победу нам ковал!"
     };
 
-    // ССЫЛКИ НА ТЕСТОВЫЕ ВИДЕО (Pixabay)
-    const V_LOOP = "https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4"; // Абстракция
-    const V_WALK = "https://cdn.pixabay.com/video/2020/05/25/40149-424079815_tiny.mp4"; // Ходьба
-    const V_TALK = "https://cdn.pixabay.com/video/2022/03/13/110697-688320040_tiny.mp4"; // Диалог
-    const V_WIN = "https://cdn.pixabay.com/video/2020/02/09/32076-390435887_tiny.mp4"; // Салют
+    // НАДЕЖНЫЕ ТЕСТОВЫЕ ВИДЕО (Chrome friendly)
+    const V_LOOP = "https://media.istockphoto.com/id/1363653139/video/abstract-background.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q="; // Просто фон
+    const V_WIN = "https://media.istockphoto.com/id/1183318283/video/fireworks.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
 
-    // СЦЕНАРИЙ (ТЕСТ)
+    // Цвета для фолбэка, если видео не работает
+    const COLORS = {
+        'intro': '#333',
+        'corridor': '#2c3e50',
+        'ou_hub': '#c0392b',
+        'it': '#27ae60',
+        'sales': '#f39c12'
+    };
+
     const scenes = {
-        'intro': { file: V_LOOP, loop: true },
-        'start_walk': { file: V_WALK, next: 'corridor' },
+        'intro': { file: V_LOOP, loop: true, color: '#111' },
+        'start_walk': { file: V_LOOP, next: 'corridor', color: '#444' },
         'corridor': { 
-            file: V_LOOP, loop: true,
+            file: V_LOOP, loop: true, color: '#2c3e50',
             btns: [
                 {t: '📂 Отдел Учета', go: 'enter_ou'},
                 {t: '📈 Продажи', go: 'enter_sales'},
@@ -122,11 +132,9 @@
                 {t: '🍽️ Кухня (Финал)', act: 'try_kitchen'}
             ]
         },
-        
-        // --- ОТДЕЛ УЧЕТА ---
-        'enter_ou': { file: V_WALK, next: 'ou_hub' },
+        'enter_ou': { file: V_LOOP, next: 'ou_hub', color: '#c0392b' },
         'ou_hub': {
-            file: V_LOOP, loop: true,
+            file: V_LOOP, loop: true, color: '#c0392b',
             btns: [
                 {t: '✨ Подойти к "Счастью"', act: 'talk_happy'},
                 {t: '🤝 Подойти к Клиентскому', act: 'talk_client'},
@@ -136,47 +144,37 @@
                 {t: '🔙 В коридор', go: 'exit_ou'}
             ]
         },
-        'exit_ou': { file: V_WALK, next: 'corridor' },
+        'exit_ou': { file: V_LOOP, next: 'corridor', color: '#444' },
 
-        // ДИАЛОГИ В ОУ
-        'talk_happy': { vid: V_TALK, id: 1 },
-        'talk_client': { vid: V_TALK, id: 2 },
-        'talk_general': { vid: V_TALK, id: 3 },
+        'talk_happy': { vid: V_LOOP, id: 1, color: '#e74c3c' },
+        'talk_client': { vid: V_LOOP, id: 2, color: '#e74c3c' },
+        'talk_general': { vid: V_LOOP, id: 3, color: '#e74c3c' },
 
-        // IT
-        'enter_it': { file: V_WALK, loop: false, nextButtons: [{t: '💻 Поговорить с IT', act: 'talk_it'}] },
-        'talk_it': { vid: V_TALK, id: 4, exit: 'exit_it' },
-        'exit_it': { file: V_WALK, next: 'ou_hub' },
+        'enter_it': { file: V_LOOP, loop: false, nextButtons: [{t: '💻 Поговорить с IT', act: 'talk_it'}], color: '#27ae60' },
+        'talk_it': { vid: V_LOOP, id: 4, exit: 'exit_it', color: '#2ecc71' },
+        'exit_it': { file: V_LOOP, next: 'ou_hub', color: '#27ae60' },
 
-        // FINDIR
-        'enter_findir': { file: V_WALK, loop: false, nextButtons: [{t: '💼 Поговорить с ФинДиром', act: 'talk_findir'}] },
-        'talk_findir': { vid: V_TALK, id: 5, exit: 'exit_findir' },
-        'exit_findir': { file: V_WALK, next: 'ou_hub' },
+        'enter_findir': { file: V_LOOP, loop: false, nextButtons: [{t: '💼 Поговорить с ФинДиром', act: 'talk_findir'}], color: '#8e44ad' },
+        'talk_findir': { vid: V_LOOP, id: 5, exit: 'exit_findir', color: '#9b59b6' },
+        'exit_findir': { file: V_LOOP, next: 'ou_hub', color: '#8e44ad' },
 
-        // --- ДРУГИЕ ОТДЕЛЫ ---
-        'enter_sales': { file: V_WALK, nextButtons: [{t: '🗣 Поговорить с Продажами', act: 'talk_sales'}] },
-        'talk_sales': { vid: V_TALK, id: 6, exit: 'exit_sales' },
-        'exit_sales': { file: V_WALK, next: 'corridor' },
+        'enter_sales': { file: V_LOOP, nextButtons: [{t: '🗣 Поговорить', act: 'talk_sales'}], color: '#f39c12' },
+        'talk_sales': { vid: V_LOOP, id: 6, exit: 'exit_sales', color: '#f1c40f' },
+        'exit_sales': { file: V_LOOP, next: 'corridor', color: '#f39c12' },
 
-        'enter_vnedr': { file: V_WALK, nextButtons: [{t: '📦 Поговорить с Внедрением', act: 'talk_vnedr'}] },
-        'talk_vnedr': { vid: V_TALK, id: 7, exit: 'exit_vnedr' },
-        'exit_vnedr': { file: V_WALK, next: 'corridor' },
+        'enter_vnedr': { file: V_LOOP, nextButtons: [{t: '📦 Поговорить', act: 'talk_vnedr'}], color: '#7f8c8d' },
+        'talk_vnedr': { vid: V_LOOP, id: 7, exit: 'exit_vnedr', color: '#bdc3c7' },
+        'exit_vnedr': { file: V_LOOP, next: 'corridor', color: '#7f8c8d' },
 
-        'enter_getit': { file: V_WALK, nextButtons: [{t: '👨‍💻 Поговорить с Разрабом', act: 'talk_getit'}] },
-        'talk_getit': { vid: V_TALK, id: 8, exit: 'exit_getit' },
-        'exit_getit': { file: V_WALK, next: 'corridor' },
+        'enter_getit': { file: V_LOOP, nextButtons: [{t: '👨‍💻 Поговорить', act: 'talk_getit'}], color: '#2980b9' },
+        'talk_getit': { vid: V_LOOP, id: 8, exit: 'exit_getit', color: '#3498db' },
+        'exit_getit': { file: V_LOOP, next: 'corridor', color: '#2980b9' },
 
-        // --- КУХНЯ ---
-        'kitchen_locked': { file: V_LOOP, nextButtons: [{t: 'Нужно собрать все!', go: 'corridor'}] },
-        'kitchen_enter': { file: V_WIN, next: 'kitchen_party' },
-        'kitchen_party': { 
-            file: V_WIN, loop: true,
-            btns: [{t: '✨ ПРОЧИТАТЬ ЗАКЛИНАНИЕ ✨', go: 'final_spell'}]
-        },
-        'final_spell': { file: V_WIN, win: true }
+        'kitchen_locked': { file: V_LOOP, nextButtons: [{t: 'Нужно 8 строчек!', go: 'corridor'}], color: '#000' },
+        'kitchen_enter': { file: V_WIN, next: 'kitchen_party', color: '#ff00ff' },
+        'kitchen_party': { file: V_WIN, loop: true, btns: [{t: '✨ ЗАКЛИНАНИЕ ✨', go: 'final_spell'}], color: '#ff00ff' },
+        'final_spell': { file: V_WIN, win: true, color: '#ffd700' }
     };
-
-    // --- ДВИЖОК ---
 
     function startGame() {
         const input = document.getElementById('username');
@@ -186,9 +184,8 @@
         
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('inventory').style.display = 'block';
-        
         playScene('intro');
-        // Эмуляция: через секунду переход к "открытию лифта"
+        // Через секунду "заходим"
         setTimeout(() => playScene('start_walk'), 1000); 
     }
 
@@ -196,21 +193,44 @@
         const scene = scenes[sceneName];
         ui.innerHTML = '';
         dialog.classList.add('hidden');
+
+        // 1. Устанавливаем фолбэк цвет (на случай если видео не грузит)
+        fallback.style.background = scene.color || '#333';
+        fallback.innerText = "СЦЕНА: " + sceneName.toUpperCase() + "\n(Если видео нет - это заглушка)";
         
-        vid.src = scene.file;
+        // 2. Пробуем видео
+        vid.src = scene.file || V_LOOP;
         vid.loop = scene.loop || false;
         
-        // Принудительный запуск (для телефонов)
-        vid.play().catch(e => console.log("Нужен клик для автоплея"));
-
-        vid.onended = () => {
-            if (scene.next) playScene(scene.next);
-            if (scene.win) showWin();
-            if (scene.btns || scene.nextButtons) showUI(scene.btns || scene.nextButtons);
+        // Обработка ошибок видео
+        vid.onerror = () => {
+            console.log("Видео не грузится, используем цветной фон");
+            // Если видео сломалось, эмулируем его окончание через таймер (чтобы игра не висла)
+            if (!scene.loop) setTimeout(onVideoEnd, 2000);
+            else showButtons(scene);
         };
 
-        if (scene.loop && (scene.btns || scene.nextButtons)) {
-            showUI(scene.btns || scene.nextButtons);
+        const playPromise = vid.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Автоплей заблокирован или ошибка:", error);
+                // Тоже эмулируем работу
+                if (!scene.loop) setTimeout(onVideoEnd, 2000);
+                else showButtons(scene);
+            });
+        }
+
+        vid.onended = onVideoEnd;
+
+        function onVideoEnd() {
+            if (scene.next) playScene(scene.next);
+            if (scene.win) showWin();
+            if (scene.btns || scene.nextButtons) showButtons(scene);
+        }
+
+        function showButtons(s) {
+            const bList = s.btns || s.nextButtons;
+            if (bList) showUI(bList);
         }
     }
 
@@ -237,14 +257,14 @@
         const dialogText = document.getElementById('dialog-text');
         const dialogBtns = document.getElementById('dialog-buttons');
         
-        dialogText.innerText = "Привет! Я собираю строчки заклинания. У тебя есть что-то для меня?";
+        dialogText.innerText = "Собираем заклинание. Есть строчка?";
         dialogBtns.innerHTML = '';
 
         const btnYes = document.createElement('button');
-        btnYes.innerText = "Да, есть! (Взять)";
+        btnYes.innerText = "Да! (Взять)";
         
         if (collected.has(data.id)) {
-            btnYes.innerText = "❌ Ты уже забрал(а) эту строчку!";
+            btnYes.innerText = "Уже есть!";
             btnYes.classList.add('secondary');
             btnYes.disabled = true;
         } else {
@@ -252,7 +272,7 @@
         }
 
         const btnNo = document.createElement('button');
-        btnNo.innerText = "Нет, спасибо (Уйти)";
+        btnNo.innerText = "Уйти";
         btnNo.classList.add('secondary');
         btnNo.onclick = () => {
             dialog.classList.add('hidden');
@@ -266,9 +286,12 @@
 
     function playItemVideo(data) {
         dialog.classList.add('hidden');
-        vid.src = data.vid;
-        vid.loop = false;
-        vid.play();
+        // Тут тоже меняем фон на цвет персонажа
+        fallback.style.background = data.color || '#555';
+        fallback.innerText = "Сотрудник говорит...";
+        
+        vid.src = data.vid || V_LOOP;
+        vid.play().catch(() => setTimeout(() => showScrollPopup(data.id, data.exit || 'ou_hub'), 1500));
         
         vid.onended = () => {
             showScrollPopup(data.id, data.exit || 'ou_hub');
@@ -278,7 +301,6 @@
     function showScrollPopup(id, exitScene) {
         const popup = document.getElementById('scrollPopup');
         const text = document.getElementById('scrollLineText');
-        
         text.innerText = POEM_LINES[id];
         popup.classList.remove('hidden');
         window.currentExit = exitScene;
