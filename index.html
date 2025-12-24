@@ -1,377 +1,1083 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QUEST: Луна против Серости</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-        
-        body { margin: 0; background: #000; color: #fff; font-family: 'Montserrat', sans-serif; overflow: hidden; height: 100vh; }
-        #game-container { position: relative; width: 100%; height: 100%; max-width: 500px; margin: 0 auto; background: #111; }
-        
-        video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; background: #000; }
-        
-        #fallback-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; font-size: 1.2rem; font-weight: bold; transition: background 0.5s ease; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <title>QUEST: Луна против Серости</title>
 
-        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px 30px; box-sizing: border-box; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent 60%); pointer-events: none; }
-        
-        /* КНОПКИ */
-        button { 
-            pointer-events: auto; 
-            background: rgba(60, 50, 75, 0.9); 
-            color: #fff; 
-            border: 3px solid #2d5a27; 
-            border-radius: 15px;
-            padding: 14px; 
-            margin: 6px 0; 
-            font-weight: bold; 
-            font-size: 0.95rem; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            box-shadow: 0 0 5px #2d5a27, 0 0 0 1px #c0392b inset;
-            width: 100%; 
-            position: relative;
-            backdrop-filter: blur(5px);
-            transition: transform 0.1s;
-        }
-        button:active { transform: scale(0.96); }
-        button::before { content: '🎄 '; margin-right: 5px; }
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
-        button.back-btn { background: rgba(40, 40, 40, 0.9); border-color: #555; box-shadow: none; font-size: 0.9rem; margin-top: 10px; }
-        button.back-btn::before { content: '↩️ '; }
+    :root{
+      --gold:#ffd700;
+      --green:#2d5a27;
+      --bg:#000;
+    }
 
-        /* МОДАЛКИ */
-        .modal-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; background: rgba(20, 15, 30, 0.98); border: 3px solid #ffd700; border-radius: 20px; padding: 25px; z-index: 20; text-align: center; pointer-events: auto; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        .modal-text { font-size: 1rem; margin-bottom: 20px; line-height: 1.4; text-align: left; }
-        .question { color: #aaa; font-style: italic; margin-bottom: 10px; border-left: 2px solid #ffd700; padding-left: 10px; }
-        .answer { color: #fff; font-weight: bold; }
-        
-        .dialog-btns { display: flex; flex-direction: column; gap: 10px; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:#fff;
+      font-family:"Montserrat",sans-serif;
+      overflow:hidden;
+      height:100vh;
+    }
 
-        .scroll-popup { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.5s; }
-        .scroll-content { background: #fff5e6; color: #4a3b2a; padding: 40px 20px; border-radius: 5px; max-width: 80%; text-align: center; box-shadow: 0 0 50px #ffd700; transform: scale(0); animation: scaleIn 0.5s forwards; border: 8px double #8b4513; }
-        
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: rgba(10, 5, 20, 0.98); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px; box-sizing: border-box; }
-        .hidden { display: none !important; }
-        input { padding: 15px; border-radius: 10px; border: 2px solid #2d5a27; background: #222; color: #fff; font-size: 1.1rem; margin-bottom: 20px; width: 100%; box-sizing: border-box; text-align: center; }
-        
-        #inventory { position: absolute; top: 20px; right: 20px; z-index: 15; background: rgba(45, 90, 39, 0.8); padding: 8px 15px; border-radius: 20px; border: 2px solid #ffd700; font-weight: bold; color: #fff; display: none; }
+    #game-container{
+      position:relative;
+      width:100%;
+      height:100%;
+      max-width:500px;
+      margin:0 auto;
+      background:#111;
+    }
 
-        @keyframes scaleIn { from { transform: scale(0) rotate(-10deg); } to { transform: scale(1) rotate(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    </style>
+    video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background:#000;
+    }
+
+    #fallback-screen{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:20px;
+      font-size:1.1rem;
+      font-weight:700;
+      transition:background .5s ease;
+      white-space:pre-line;
+      opacity:.9;
+    }
+
+    /* ЭФФЕКТ "СЕРОСТЬ" (уменьшается по мере прогресса) */
+    #fxNoise{
+      position:absolute;
+      inset:0;
+      z-index:5;
+      pointer-events:none;
+      opacity:.55;
+      mix-blend-mode:overlay;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.08), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.05), transparent 35%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.05), rgba(255,255,255,.05) 1px, transparent 1px, transparent 3px);
+      filter:blur(.3px);
+      transition:opacity .35s ease;
+    }
+    #fxVignette{
+      position:absolute;
+      inset:0;
+      z-index:6;
+      pointer-events:none;
+      background:radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.75) 100%);
+      opacity:.75;
+      transition:opacity .35s ease;
+    }
+
+    .ui-layer{
+      position:absolute;
+      inset:0;
+      z-index:10;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      padding:20px 30px;
+      box-sizing:border-box;
+      background:linear-gradient(to top, rgba(0,0,0,.9), transparent 60%);
+      pointer-events:none;
+    }
+
+    button{
+      pointer-events:auto;
+      background:rgba(60,50,75,.9);
+      color:#fff;
+      border:3px solid var(--green);
+      border-radius:15px;
+      padding:14px;
+      margin:6px 0;
+      font-weight:700;
+      font-size:.95rem;
+      cursor:pointer;
+      text-transform:uppercase;
+      box-shadow:0 0 5px var(--green), 0 0 0 1px #c0392b inset;
+      width:100%;
+      position:relative;
+      backdrop-filter:blur(5px);
+      transition:transform .1s, opacity .2s;
+    }
+    button:active{ transform:scale(.96); }
+    button::before{ content:"🎄 "; margin-right:5px; }
+
+    button.back-btn{
+      background:rgba(40,40,40,.9);
+      border-color:#555;
+      box-shadow:none;
+      font-size:.9rem;
+      margin-top:10px;
+      text-transform:none;
+    }
+    button.back-btn::before{ content:"↩️ "; }
+
+    button.alt-btn{
+      background:rgba(0,0,0,.55);
+      border-color:var(--gold);
+      box-shadow:0 0 10px rgba(255,215,0,.2);
+      text-transform:none;
+    }
+    button.alt-btn::before{ content:"✨ "; }
+
+    .modal-box{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      width:90%;
+      background:rgba(20,15,30,.98);
+      border:3px solid var(--gold);
+      border-radius:20px;
+      padding:22px;
+      z-index:20;
+      text-align:center;
+      pointer-events:auto;
+      box-shadow:0 0 30px rgba(0,0,0,.8);
+    }
+    .modal-text{
+      font-size:1rem;
+      margin-bottom:16px;
+      line-height:1.4;
+      text-align:left;
+    }
+    .question{
+      color:#aaa;
+      font-style:italic;
+      margin-bottom:10px;
+      border-left:2px solid var(--gold);
+      padding-left:10px;
+    }
+    .dialog-btns{ display:flex; flex-direction:column; gap:10px; }
+
+    .scroll-popup{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,.9);
+      z-index:50;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      animation:fadeIn .5s;
+    }
+    .scroll-content{
+      background:#fff5e6;
+      color:#4a3b2a;
+      padding:36px 20px;
+      border-radius:6px;
+      max-width:86%;
+      text-align:center;
+      box-shadow:0 0 50px var(--gold);
+      transform:scale(0);
+      animation:scaleIn .5s forwards;
+      border:8px double #8b4513;
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      z-index:100;
+      background:rgba(10,5,20,.98);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:30px;
+      box-sizing:border-box;
+    }
+    .hidden{ display:none !important; }
+
+    input{
+      padding:15px;
+      border-radius:10px;
+      border:2px solid var(--green);
+      background:#222;
+      color:#fff;
+      font-size:1.05rem;
+      margin:12px 0 18px;
+      width:100%;
+      box-sizing:border-box;
+      text-align:center;
+    }
+
+    #inventory{
+      position:absolute;
+      top:18px;
+      right:18px;
+      z-index:15;
+      background:rgba(45,90,39,.8);
+      padding:8px 14px;
+      border-radius:20px;
+      border:2px solid var(--gold);
+      font-weight:700;
+      color:#fff;
+      display:none;
+      box-shadow:0 0 12px rgba(0,0,0,.35);
+    }
+
+    /* ПАЗЛ */
+    #puzzleScreen .modal-text{ text-align:left; font-size:.95rem; }
+    .pill{
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.08);
+      margin:6px 6px 0 0;
+      cursor:pointer;
+      user-select:none;
+      font-size:.9rem;
+      line-height:1.2;
+    }
+    .pill:hover{ background:rgba(255,255,255,.14); }
+    .pill.used{
+      opacity:.35;
+      pointer-events:none;
+      text-decoration:line-through;
+    }
+    .orderBox{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:2px dashed rgba(255,215,0,.7);
+      background:rgba(0,0,0,.25);
+      min-height:64px;
+      text-align:left;
+      font-size:.95rem;
+    }
+    .orderLine{
+      margin:6px 0;
+      padding:10px 10px;
+      border-radius:12px;
+      background:rgba(255,215,0,.12);
+      border:1px solid rgba(255,215,0,.25);
+    }
+
+    @keyframes scaleIn{ from{ transform:scale(0) rotate(-10deg);} to{ transform:scale(1) rotate(0);} }
+    @keyframes fadeIn{ from{ opacity:0;} to{ opacity:1;} }
+  </style>
 </head>
+
 <body>
-
 <div id="game-container">
-    <div id="fallback-screen">ЗАГРУЗКА...</div>
-    <video id="vid" playsinline webkit-playsinline muted></video>
-    <div id="inventory">📜 Свиток: <span id="count">0</span>/8</div>
-    
-    <div id="ui" class="ui-layer hidden"></div>
+  <div id="fallback-screen">ЗАГРУЗКА...</div>
+  <video id="vid" playsinline webkit-playsinline muted></video>
 
-    <div id="dialog" class="modal-box hidden">
-        <div id="dialog-content" class="modal-text"></div>
-        <div id="dialog-buttons" class="dialog-btns"></div>
+  <div id="fxNoise"></div>
+  <div id="fxVignette"></div>
+
+  <div id="inventory">📜 Свиток: <span id="count">0</span>/8</div>
+  <div id="ui" class="ui-layer hidden"></div>
+
+  <div id="dialog" class="modal-box hidden">
+    <div id="dialog-content" class="modal-text"></div>
+    <div id="dialog-buttons" class="dialog-btns"></div>
+  </div>
+
+  <div id="rulesScreen" class="modal-box hidden" style="z-index:110;">
+    <h2 style="color:var(--gold);margin-top:0;">ПРАВИЛА ИГРЫ 🎄</h2>
+    <div class="modal-text" style="font-size:.95rem;">
+      1) Ты в офисе "Open Service".<br/>
+      2) Цель: найти 8 частей заклинания.<br/>
+      3) Заходи в кабинеты и проходи мини-викторины у сотрудников.<br/>
+      4) Собери всё, чтобы открыть дверь на Кухню.<br/>
+      5) В конце — собери заклинание в правильном порядке.
+    </div>
+    <button onclick="startActualGame()">ПОГНАЛИ! 🚀</button>
+  </div>
+
+  <div id="scrollPopup" class="scroll-popup hidden">
+    <div class="scroll-content">
+      <h3 style="margin:0;color:#8b4513">✨ СТРОЧКА НАЙДЕНА ✨</h3>
+      <p style="font-family:Georgia;font-style:italic;font-size:1.15rem;font-weight:700;margin:18px 0;" id="scrollLineText">...</p>
+      <button onclick="closeScroll()" style="background:#8b4513;border-color:#5a2d0c;box-shadow:none;">В ИНВЕНТАРЬ</button>
+    </div>
+  </div>
+
+  <!-- ЛОГИН -->
+  <div id="loginScreen" class="overlay">
+    <h1 style="color:var(--gold);text-shadow:0 0 10px #ff0000;margin:0 0 10px;">🎄 ЛУНА v СЕРОСТЬ 🎄</h1>
+    <p style="margin:0 0 12px;">Интерактивный квест.<br/>Собери заклинание, спаси праздник.</p>
+
+    <div id="continueBox" class="modal-box hidden" style="position:relative;transform:none;top:auto;left:auto;width:100%;max-width:420px;">
+      <div class="modal-text" style="text-align:center;">
+        Найден сохранённый прогресс для <b id="savedName">Игрок</b>.<br/>
+        Продолжить?
+      </div>
+      <button onclick="continueGame()" class="alt-btn">Продолжить</button>
+      <button onclick="resetProgress()" class="back-btn">Начать заново</button>
     </div>
 
-    <div id="rulesScreen" class="modal-box hidden" style="z-index: 110;">
-        <h2 style="color:#ffd700; margin-top:0;">ПРАВИЛА ИГРЫ 🎄</h2>
-        <div class="modal-text" style="text-align: left; font-size: 0.95rem;">
-            1. Ты в офисе "Open Service".<br>
-            2. Твоя цель: найти 8 частей заклинания.<br>
-            3. Заходи в кабинеты и говори с сотрудниками.<br>
-            4. Собери всё, чтобы открыть дверь на Кухню!
-        </div>
-        <button onclick="startActualGame()">ПОГНАЛИ! 🚀</button>
+    <div id="newGameBox" style="width:100%;max-width:420px;">
+      <input type="text" id="username" placeholder="Твоё имя" />
+      <button onclick="showRules()">НАЧАТЬ</button>
     </div>
+  </div>
 
-    <div id="scrollPopup" class="scroll-popup hidden">
-        <div class="scroll-content">
-            <h3 style="margin:0; color:#8b4513">✨ СТРОЧКА НАЙДЕНА ✨</h3>
-            <p style="font-family:'Georgia'; font-style:italic; font-size:1.2rem; font-weight:bold; margin:20px 0;" id="scrollLineText">...</p>
-            <button onclick="closeScroll()" style="background:#8b4513; border-color:#5a2d0c; box-shadow:none;">В ИНВЕНТАРЬ</button>
-        </div>
+  <!-- ПАЗЛ -->
+  <div id="puzzleScreen" class="modal-box hidden" style="z-index:120;">
+    <h2 style="color:var(--gold);margin-top:0;">✨ СОБЕРИ ЗАКЛИНАНИЕ ✨</h2>
+    <div class="modal-text">
+      Нажимай на строки (они перемешаны), чтобы выстроить заклинание правильно.<br/>
+      Если ошибёшься — можно сбросить и попробовать снова.
     </div>
+    <div id="puzzlePills"></div>
+    <div class="orderBox" id="puzzleOrder"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button onclick="puzzleReset()" class="back-btn" style="margin:0;flex:1;">СБРОС</button>
+      <button onclick="puzzleCheck()" class="alt-btn" style="margin:0;flex:1;">ПРОВЕРИТЬ</button>
+    </div>
+    <button onclick="closePuzzle()" class="back-btn">Назад</button>
+    <div id="puzzleHint" style="margin-top:10px;color:#aaa;font-size:.9rem;"></div>
+  </div>
 
-    <div id="loginScreen" class="overlay">
-        <h1 style="color:#ffd700; text-shadow: 0 0 10px #ff0000;">🎄 ЛУНА v СЕРОСТЬ 🎄</h1>
-        <p>Интерактивный квест.<br>Собери заклинание, спаси праздник.</p>
-        <input type="text" id="username" placeholder="Твое имя">
-        <button onclick="showRules()">НАЧАТЬ</button>
-    </div>
-
-    <div id="winScreen" class="overlay hidden">
-        <h1 style="color:#ffd700">ПОБЕДА!</h1>
-        <p>Ты собрал(а) всё заклинание!<br>Новый год спасен!</p>
-        <button onclick="location.reload()">В МЕНЮ</button>
-    </div>
+  <div id="winScreen" class="overlay hidden">
+    <h1 style="color:var(--gold);margin:0 0 10px;">ПОБЕДА!</h1>
+    <p style="margin:0 0 16px;">Ты собрал(а) всё заклинание!<br/>Новый год спасён!</p>
+    <button onclick="resetProgress()">В МЕНЮ</button>
+  </div>
 </div>
 
 <script>
-    const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg"; 
-    const TG_CHAT_ID = "7524680591";
+  /***********************
+   * TELEGRAM
+   ***********************/
+  const TELEGRAM_ENABLED = true;
 
-    const vid = document.getElementById('vid');
-    const fallback = document.getElementById('fallback-screen');
-    const ui = document.getElementById('ui');
-    const dialog = document.getElementById('dialog');
-    let collected = new Set();
-    let userName = "Игрок";
-    let videoTimeout; // Таймер безопасности
+  // Вставь свои значения:
+  const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg";
+  const TG_CHAT_ID = "7524680591";
 
-    const POEM_LINES = {
-        1: "Зажжём сердца, прогоним прочь тоску,",
-        2: "Клиент доволен — мы всегда на чеку!",
-        3: "Сведём баланс: копейка до рубля,",
-        4: "И не зависнет сервер никогда!",
-        5: "Стратегия ясна, бюджет растёт,",
-        6: "Побьём рекорды в этот Новый год!",
-        7: "Система — в норме, внедрение — идеал,",
-        8: "Чтоб чистый код победу нам ковал!"
+  /***********************
+   * ОСНОВНОЕ
+   ***********************/
+  const TOTAL_LINES = 8;
+  const STORAGE_KEY = "quest_state_v2";
+
+  const vid = document.getElementById("vid");
+  const fallback = document.getElementById("fallback-screen");
+  const ui = document.getElementById("ui");
+  const dialog = document.getElementById("dialog");
+  const fxNoise = document.getElementById("fxNoise");
+  const fxVignette = document.getElementById("fxVignette");
+
+  let collected = new Set();
+  let userName = "Игрок";
+  let videoTimeout = null;
+  let currentSceneKey = "intro";
+  let puzzleSolved = false;
+
+  // Заглушки (если нет локальных видео)
+  const V_LOOP = "https://media.istockphoto.com/id/1363653139/video/abstract-background.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
+  const V_WIN  = "https://media.istockphoto.com/id/1183318283/video/fireworks.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
+
+  const USE_LOCAL_VIDEOS = false;   // включи, когда добавишь свои mp4
+  const VIDEO_BASE = "./videos/";   // папка с mp4
+
+  const POEM_LINES = {
+    1: "Зажжём сердца, прогоним прочь тоску,",
+    2: "Клиент доволен — мы всегда на чеку!",
+    3: "Сведём баланс: копейка до рубля,",
+    4: "И не зависнет сервер никогда!",
+    5: "Стратегия ясна, бюджет растёт,",
+    6: "Побьём рекорды в этот Новый год!",
+    7: "Система — в норме, внедрение — идеал,",
+    8: "Чтоб чистый код победу нам ковал!"
+  };
+
+  const ACTS = {
+    happy: {
+      speaker: "Частичка счастья",
+      q: "Что лучше всего прогоняет офисную серость?",
+      options: ["Сухие отчёты без улыбки", "Корпоративная культура и забота", "Отключить всем кофе-машину"],
+      correct: 1,
+      lineId: 1
+    },
+    client: {
+      speaker: "Клиентский учёт",
+      q: "Что важнее всего в работе с клиентом?",
+      options: ["Пропасть на 3 дня", "Быть на связи и помогать", "Отвечать только мемами"],
+      correct: 1,
+      lineId: 2
+    },
+    gen: {
+      speaker: "Внутренний учёт",
+      q: "Какой принцип у учёта самый любимый?",
+      options: ["Как-нибудь сойдётся", "Точность и порядок", "Считать на калькуляторе из 90-х без батареек"],
+      correct: 1,
+      lineId: 3
+    },
+    it: {
+      speaker: "IT",
+      q: "Что делает IT, когда у всех всё работает?",
+      options: ["Смотрит в стену", "Предотвращает проблемы заранее", "Нажимает Ctrl+Alt+Del на всём подряд"],
+      correct: 1,
+      lineId: 4
+    },
+    fd: {
+      speaker: "ФинДир",
+      q: "Что такое хороший бюджет на год?",
+      options: ["Это миф", "Это план + контроль + гибкость", "Это когда все деньги ушли на гирлянды"],
+      correct: 1,
+      lineId: 5
+    },
+    sales: {
+      speaker: "Продажи",
+      q: "Что ближе всего к духу продаж?",
+      options: ["Тишина и покой", "Результат, драйв и рекорды", "Отключить телефон навсегда"],
+      correct: 1,
+      lineId: 6
+    },
+    vnedr: {
+      speaker: "Внедрение",
+      q: "Когда внедрение можно считать идеальным?",
+      options: ["Когда никто не заметил изменений", "Когда всё настроено и работает у клиента", "Когда склад сам себя посчитал"],
+      correct: 1,
+      lineId: 7
+    },
+    getit: {
+      speaker: "Get IT",
+      q: "Главный признак хорошего кода?",
+      options: ["Чистота и поддерживаемость", "Чем больше строк — тем лучше", "Комменты в стиле «не трогать, оно живёт»"],
+      correct: 0,
+      lineId: 8
+    }
+  };
+
+  const S = {
+    intro: "00_intro.mp4",
+    lift: "01_lift_open.mp4",
+
+    corr_ou: "02_corridor_ou.mp4",
+    enter_ou: "03_enter_ou.mp4",
+    ou_in: "04_ou_inside.mp4",
+    exit_ou: "14_exit_ou.mp4",
+
+    talk_happy: "05_talk_happy.mp4",
+    talk_client: "06_talk_client.mp4",
+    talk_gen: "07_talk_general.mp4",
+
+    enter_it: "08_enter_it.mp4",
+    talk_it: "09_talk_it.mp4",
+    exit_it: "10_exit_it.mp4",
+
+    enter_fd: "11_enter_findir.mp4",
+    talk_fd: "12_talk_findir.mp4",
+    exit_fd: "13_exit_findir.mp4",
+
+    walk_sales: "15_walk_to_sales.mp4",
+    corr_sales: "16_corridor_sales.mp4",
+    enter_sales: "17_enter_sales.mp4",
+    sales_in: "18_sales_inside.mp4",
+    talk_sales: "19_talk_sales.mp4",
+    exit_sales: "20_exit_sales.mp4",
+
+    walk_getit: "21_walk_to_getit.mp4",
+    corr_getit: "22_corridor_getit.mp4",
+    enter_getit: "23_enter_getit.mp4",
+    getit_in: "24_getit_inside.mp4",
+    talk_getit: "25_talk_getit.mp4",
+    exit_getit: "26_exit_getit.mp4",
+
+    walk_vnedr: "27_walk_to_vnedr.mp4",
+    corr_vnedr: "28_corridor_vnedr.mp4",
+    enter_vnedr: "29_enter_vnedr.mp4",
+    vnedr_in: "30_vnedr_inside.mp4",
+    talk_vnedr: "31_talk_vnedr.mp4",
+    exit_vnedr: "32_exit_vnedr.mp4",
+
+    walk_kitch: "33_walk_to_kitchen.mp4",
+    corr_kitch: "34_corridor_kitchen.mp4",
+    kitch_lock: "35_kitchen_locked.mp4",
+    kitch_open: "36_kitchen_open.mp4",
+    party: "37_party_loop.mp4",
+    final: "38_final.mp4"
+  };
+
+  // ВАЖНО: talk_* используют file (это фикс “ломается”)
+  const scenes = {
+    intro: { file: S.intro, loop: true, color: "#111" },   // пролог, 4 сек, потом лифт
+    lift:  { file: S.lift, next: "c1", color: "#222" },
+
+    c1: { file: S.corr_ou, loop: true, color: "#2c3e50",
+      btns: [
+        { t: "📂 Зайти в Отдел Учёта", go: "enter_ou" },
+        { t: "Идти дальше ➡️", go: "w_sales", class: "back-btn" }
+      ]
+    },
+
+    enter_ou: { file: S.enter_ou, next: "ou_hub", color: "#c0392b" },
+
+    ou_hub: { file: S.ou_in, loop: true, color: "#c0392b",
+      btns: [
+        { t: '✨ Подойти к "Счастью"', act: "happy" },
+        { t: "👥 Сотрудники Учёта", go: "ou_sub" },
+        { t: "💻 Зайти в IT", go: "enter_it" },
+        { t: "💼 Зайти к ФинДиру", go: "enter_fd" },
+        { t: "Выйти в коридор ↩️", go: "exit_ou", class: "back-btn" }
+      ]
+    },
+
+    ou_sub: { file: S.ou_in, loop: true, color: "#a93226",
+      btns: [
+        { t: "📄 Внутренний учёт", act: "gen" },
+        { t: "🤝 Клиентский отдел", act: "client" },
+        { t: "Назад в центр ОУ ↩️", go: "ou_hub", class: "back-btn" }
+      ]
+    },
+
+    talk_happy:  { file: S.talk_happy,  color: "#e74c3c", quizAct: "happy"  },
+    talk_client: { file: S.talk_client, color: "#e74c3c", quizAct: "client" },
+    talk_gen:    { file: S.talk_gen,    color: "#e74c3c", quizAct: "gen"    },
+
+    enter_it: { file: S.enter_it, loop: true, color: "#27ae60",
+      btns: [
+        { t: "💻 Говорить с IT", act: "it" },
+        { t: "Назад в ОУ", go: "exit_it", class: "back-btn" }
+      ]
+    },
+    talk_it: { file: S.talk_it, color: "#2ecc71", quizAct: "it", afterQuizReturn: "enter_it" },
+    exit_it: { file: S.exit_it, next: "ou_hub", color: "#27ae60" },
+
+    enter_fd: { file: S.enter_fd, loop: true, color: "#8e44ad",
+      btns: [
+        { t: "💼 Говорить с ФинДиром", act: "fd" },
+        { t: "Назад в ОУ", go: "exit_fd", class: "back-btn" }
+      ]
+    },
+    talk_fd: { file: S.talk_fd, color: "#9b59b6", quizAct: "fd", afterQuizReturn: "enter_fd" },
+    exit_fd: { file: S.exit_fd, next: "ou_hub", color: "#8e44ad" },
+
+    exit_ou: { file: S.exit_ou, next: "c1", color: "#333" },
+
+    w_sales: { file: S.walk_sales, next: "c2", color: "#444" },
+    c2: { file: S.corr_sales, loop: true, color: "#d35400",
+      btns: [
+        { t: "📈 Зайти в Продажи", go: "enter_sales" },
+        { t: "Идти дальше ➡️", go: "w_getit", class: "back-btn" },
+        { t: "⬅️ Назад к ОУ", go: "c1", class: "back-btn" }
+      ]
+    },
+    enter_sales: { file: S.enter_sales, next: "sales_in", color: "#e67e22" },
+    sales_in: { file: S.sales_in, loop: true, color: "#e67e22",
+      btns: [
+        { t: "🗣 Поговорить", act: "sales" },
+        { t: "Выйти в коридор", go: "exit_sales", class: "back-btn" }
+      ]
+    },
+    talk_sales: { file: S.talk_sales, color: "#f39c12", quizAct: "sales", afterQuizReturn: "sales_in" },
+    exit_sales: { file: S.exit_sales, next: "c2", color: "#d35400" },
+
+    w_getit: { file: S.walk_getit, next: "c3", color: "#444" },
+    c3: { file: S.corr_getit, loop: true, color: "#2980b9",
+      btns: [
+        { t: "💻 Зайти в Get IT", go: "enter_getit" },
+        { t: "Идти дальше ➡️", go: "w_vnedr", class: "back-btn" },
+        { t: "⬅️ Назад к Продажам", go: "c2", class: "back-btn" }
+      ]
+    },
+    enter_getit: { file: S.enter_getit, next: "getit_in", color: "#3498db" },
+    getit_in: { file: S.getit_in, loop: true, color: "#3498db",
+      btns: [
+        { t: "👨‍💻 Поговорить", act: "getit" },
+        { t: "Выйти в коридор", go: "exit_getit", class: "back-btn" }
+      ]
+    },
+    talk_getit: { file: S.talk_getit, color: "#5dade2", quizAct: "getit", afterQuizReturn: "getit_in" },
+    exit_getit: { file: S.exit_getit, next: "c3", color: "#2980b9" },
+
+    w_vnedr: { file: S.walk_vnedr, next: "c4", color: "#444" },
+    c4: { file: S.corr_vnedr, loop: true, color: "#7f8c8d",
+      btns: [
+        { t: "📦 Зайти во Внедрение", go: "enter_vnedr" },
+        { t: "Идти на Кухню ➡️", go: "w_kitch", class: "back-btn" },
+        { t: "⬅️ Назад к Get IT", go: "c3", class: "back-btn" }
+      ]
+    },
+    enter_vnedr: { file: S.enter_vnedr, next: "vnedr_in", color: "#95a5a6" },
+    vnedr_in: { file: S.vnedr_in, loop: true, color: "#95a5a6",
+      btns: [
+        { t: "📦 Поговорить", act: "vnedr" },
+        { t: "Выйти в коридор", go: "exit_vnedr", class: "back-btn" }
+      ]
+    },
+    talk_vnedr: { file: S.talk_vnedr, color: "#bdc3c7", quizAct: "vnedr", afterQuizReturn: "vnedr_in" },
+    exit_vnedr: { file: S.exit_vnedr, next: "c4", color: "#7f8c8d" },
+
+    w_kitch: { file: S.walk_kitch, next: "c5", color: "#444" },
+    c5: { file: S.corr_kitch, loop: true, color: "#8e44ad",
+      btns: [
+        { t: "🍽️ Зайти на Кухню", act: "kitchen" },
+        { t: "⬅️ Назад к Внедрению", go: "c4", class: "back-btn" }
+      ]
+    },
+
+    kitch_lock: { file: S.kitch_lock, next: "c5", color: "#000", lockAlert: true },
+    kitch_open: { file: S.kitch_open, next: "party", color: "#ff00ff" },
+
+    party: { file: S.party, loop: true, color: "#ff00ff",
+      btns: [
+        { t: "✨ СОБРАТЬ ЗАКЛИНАНИЕ ✨", act: "puzzle", class: "alt-btn" },
+        { t: "Назад в коридор ↩️", go: "c5", class: "back-btn" }
+      ]
+    },
+
+    final: { file: S.final, win: true, color: "#ffd700" }
+  };
+
+  /***********************
+   * TELEGRAM SEND
+   ***********************/
+  function sendTg(text){
+    if(!TELEGRAM_ENABLED) return;
+    if(!TG_TOKEN || !TG_CHAT_ID) return;
+    fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ chat_id:TG_CHAT_ID, text, parse_mode:"HTML" })
+    }).catch(()=>{});
+  }
+
+  /***********************
+   * SAVE/LOAD
+   ***********************/
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      const s = JSON.parse(raw);
+      if(!s || !s.userName) return null;
+      return s;
+    }catch(e){ return null; }
+  }
+
+  function saveState(){
+    const state = {
+      userName,
+      collected: Array.from(collected),
+      currentSceneKey,
+      puzzleSolved
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function applyLoadedState(state){
+    userName = state.userName || "Игрок";
+    collected = new Set(Array.isArray(state.collected) ? state.collected : []);
+    currentSceneKey = state.currentSceneKey || "intro";
+    puzzleSolved = !!state.puzzleSolved;
+
+    document.getElementById("count").innerText = collected.size;
+    updateEffects();
+  }
+
+  function resetProgress(){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  function bootLogin(){
+    const state = loadState();
+    if(state){
+      applyLoadedState(state);
+      document.getElementById("savedName").innerText = userName;
+      document.getElementById("continueBox").classList.remove("hidden");
+      document.getElementById("newGameBox").classList.add("hidden");
+    }
+  }
+
+  function continueGame(){
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("inventory").style.display = "block";
+    playScene(currentSceneKey);
+    sendTg(`🔁 <b>${userName}</b> продолжил(а) игру.`);
+  }
+
+  bootLogin();
+
+  /***********************
+   * EFFECTS
+   ***********************/
+  function progressRatio(){
+    return Math.min(1, collected.size / TOTAL_LINES);
+  }
+
+  function updateEffects(){
+    const p = progressRatio();
+    const gray = (1 - p);
+    vid.style.filter = `grayscale(${gray}) saturate(${0.25 + p*0.9}) contrast(${0.9 + p*0.15}) brightness(${0.85 + p*0.2})`;
+    fxNoise.style.opacity = 0.55 * (1 - p);
+    fxVignette.style.opacity = 0.75 * (1 - p*0.8);
+  }
+
+  /***********************
+   * VIDEO
+   ***********************/
+  function resolveVideoSrc(file, isWin){
+    if(!file) return isWin ? V_WIN : V_LOOP;
+    if(USE_LOCAL_VIDEOS){
+      if(/^https?:\/\//.test(file)) return file;
+      return VIDEO_BASE + file;
+    }
+    return isWin ? V_WIN : V_LOOP;
+  }
+
+  function playScene(key){
+    clearTimeout(videoTimeout);
+    const s = scenes[key];
+    currentSceneKey = key;
+    saveState();
+
+    ui.innerHTML = "";
+    dialog.classList.add("hidden");
+
+    fallback.style.background = s.color || "#333";
+    fallback.innerText = `СЦЕНА: ${key.toUpperCase()}`;
+
+    updateEffects();
+
+    const src = resolveVideoSrc(s.file, !!s.win);
+    vid.src = src;
+    vid.loop = !!s.loop;
+
+    vid.onended = () => {
+      clearTimeout(videoTimeout);
+      onVideoEnd(s);
     };
 
-    const S = {
-        intro: '00_intro.mp4', lift: '01_lift_open.mp4',
-        corr_ou: '02_corridor_ou.mp4', enter_ou: '03_enter_ou.mp4', ou_in: '04_ou_inside.mp4', exit_ou: '14_exit_ou.mp4',
-        talk_happy: '05_talk_happy.mp4', talk_client: '06_talk_client.mp4', talk_gen: '07_talk_general.mp4',
-        enter_it: '08_enter_it.mp4', talk_it: '09_talk_it.mp4', exit_it: '10_exit_it.mp4',
-        enter_fd: '11_enter_findir.mp4', talk_fd: '12_talk_findir.mp4', exit_fd: '13_exit_findir.mp4',
-        walk_sales: '15_walk_to_sales.mp4', corr_sales: '16_corridor_sales.mp4', enter_sales: '17_enter_sales.mp4', sales_in: '18_sales_inside.mp4', talk_sales: '19_talk_sales.mp4', exit_sales: '20_exit_sales.mp4',
-        walk_getit: '21_walk_to_getit.mp4', corr_getit: '22_corridor_getit.mp4', enter_getit: '23_enter_getit.mp4', getit_in: '24_getit_inside.mp4', talk_getit: '25_talk_getit.mp4', exit_getit: '26_exit_getit.mp4',
-        walk_vnedr: '27_walk_to_vnedr.mp4', corr_vnedr: '28_corridor_vnedr.mp4', enter_vnedr: '29_enter_vnedr.mp4', vnedr_in: '30_vnedr_inside.mp4', talk_vnedr: '31_talk_vnedr.mp4', exit_vnedr: '32_exit_vnedr.mp4',
-        walk_kitch: '33_walk_to_kitchen.mp4', corr_kitch: '34_corridor_kitchen.mp4', kitch_lock: '35_kitchen_locked.mp4', kitch_open: '36_kitchen_open.mp4', party: '37_party_loop.mp4', final: '38_final.mp4'
-    };
-    
-    // Заглушки
-    const V_LOOP = "https://media.istockphoto.com/id/1363653139/video/abstract-background.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
-    const V_WIN = "https://media.istockphoto.com/id/1183318283/video/fireworks.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
-
-    const scenes = {
-        'intro': { file: S.intro, loop: true, color: '#111' },
-        'lift': { file: S.lift, next: 'c1', color: '#222' },
-
-        'c1': { file: S.corr_ou, loop: true, color: '#2c3e50', btns: [{t: '📂 Зайти в Отдел Учета', go: 'enter_ou'}, {t: 'Идти дальше ➡️', go: 'w_sales', class: 'back-btn'}] },
-        'enter_ou': { file: S.enter_ou, next: 'ou_hub', color: '#c0392b' },
-        'ou_hub': { file: S.ou_in, loop: true, color: '#c0392b', btns: [
-            {t: '✨ Подойти к "Счастью"', act: 'happy'},
-            {t: '👥 Сотрудники Учета', go: 'ou_sub'},
-            {t: '💻 Зайти в IT', go: 'enter_it'},
-            {t: '💼 Зайти к ФинДиру', go: 'enter_fd'},
-            {t: 'Выйти в коридор ↩️', go: 'exit_ou', class: 'back-btn'}
-        ]},
-        'ou_sub': { file: S.ou_in, loop: true, color: '#a93226', btns: [
-            {t: '📄 Внутренний учет', act: 'gen'},
-            {t: '🤝 Клиентский отдел', act: 'client'},
-            {t: 'Назад в центр ОУ ↩️', go: 'ou_hub', class: 'back-btn'}
-        ]},
-        'talk_happy': { vid: S.talk_happy, id: 1, color: '#e74c3c' },
-        'talk_client': { vid: S.talk_client, id: 2, color: '#e74c3c' },
-        'talk_gen': { vid: S.talk_gen, id: 3, color: '#e74c3c' },
-        
-        'enter_it': { file: S.enter_it, loop: true, color: '#27ae60', btns: [{t: '💻 Говорить с IT', act: 'it'}, {t: 'Назад в ОУ', go: 'exit_it', class: 'back-btn'}] },
-        'talk_it': { vid: S.talk_it, id: 4, exit: 'exit_it', color: '#2ecc71' },
-        'exit_it': { file: S.exit_it, next: 'ou_hub', color: '#27ae60' },
-        
-        'enter_fd': { file: S.enter_fd, loop: true, color: '#8e44ad', btns: [{t: '💼 Говорить с ФинДиром', act: 'fd'}, {t: 'Назад в ОУ', go: 'exit_fd', class: 'back-btn'}] },
-        'talk_fd': { vid: S.talk_fd, id: 5, exit: 'exit_fd', color: '#9b59b6' },
-        'exit_fd': { file: S.exit_fd, next: 'ou_hub', color: '#8e44ad' },
-        
-        'exit_ou': { file: S.exit_ou, next: 'c1', color: '#333' },
-
-        'w_sales': { file: S.walk_sales, next: 'c2', color: '#444' },
-        'c2': { file: S.corr_sales, loop: true, color: '#d35400', btns: [{t: '📈 Зайти в Продажи', go: 'enter_sales'}, {t: 'Идти дальше ➡️', go: 'w_getit', class: 'back-btn'}, {t: '⬅️ Назад к ОУ', go: 'c1', class: 'back-btn'}] },
-        'enter_sales': { file: S.enter_sales, next: 'sales_in', color: '#e67e22' },
-        'sales_in': { file: S.sales_in, loop: true, color: '#e67e22', btns: [{t: '🗣 Поговорить', act: 'sales'}, {t: 'Выйти в коридор', go: 'exit_sales', class: 'back-btn'}] },
-        'talk_sales': { vid: S.talk_sales, id: 6, exit: 'sales_in', color: '#f39c12' },
-        'exit_sales': { file: S.exit_sales, next: 'c2', color: '#d35400' },
-
-        'w_getit': { file: S.walk_getit, next: 'c3', color: '#444' },
-        'c3': { file: S.corr_getit, loop: true, color: '#2980b9', btns: [{t: '💻 Зайти в Get IT', go: 'enter_getit'}, {t: 'Идти дальше ➡️', go: 'w_vnedr', class: 'back-btn'}, {t: '⬅️ Назад к Продажам', go: 'c2', class: 'back-btn'}] },
-        'enter_getit': { file: S.enter_getit, next: 'getit_in', color: '#3498db' },
-        'getit_in': { file: S.getit_in, loop: true, color: '#3498db', btns: [{t: '👨‍💻 Поговорить', act: 'getit'}, {t: 'Выйти в коридор', go: 'exit_getit', class: 'back-btn'}] },
-        'talk_getit': { vid: S.talk_getit, id: 8, exit: 'getit_in', color: '#5dade2' },
-        'exit_getit': { file: S.exit_getit, next: 'c3', color: '#2980b9' },
-
-        'w_vnedr': { file: S.walk_vnedr, next: 'c4', color: '#444' },
-        'c4': { file: S.corr_vnedr, loop: true, color: '#7f8c8d', btns: [{t: '📦 Зайти во Внедрение', go: 'enter_vnedr'}, {t: 'Идти на Кухню ➡️', go: 'w_kitch', class: 'back-btn'}, {t: '⬅️ Назад к Get IT', go: 'c3', class: 'back-btn'}] },
-        'enter_vnedr': { file: S.enter_vnedr, next: 'vnedr_in', color: '#95a5a6' },
-        'vnedr_in': { file: S.vnedr_in, loop: true, color: '#95a5a6', btns: [{t: '📦 Поговорить', act: 'vnedr'}, {t: 'Выйти в коридор', go: 'exit_vnedr', class: 'back-btn'}] },
-        'talk_vnedr': { vid: S.talk_vnedr, id: 7, exit: 'vnedr_in', color: '#bdc3c7' },
-        'exit_vnedr': { file: S.exit_vnedr, next: 'c4', color: '#7f8c8d' },
-
-        'w_kitch': { file: S.walk_kitch, next: 'c5', color: '#444' },
-        'c5': { file: S.corr_kitch, loop: true, color: '#8e44ad', btns: [{t: '🍽️ Зайти на Кухню', act: 'kitchen'}, {t: '⬅️ Назад к Внедрению', go: 'c4', class: 'back-btn'}] },
-        'kitch_lock': { file: S.kitch_lock, next: 'c5', color: '#000', alert: true },
-        'kitch_open': { file: S.kitch_open, next: 'party', color: '#ff00ff' },
-        'party': { file: S.party, loop: true, color: '#ff00ff', btns: [{t: '✨ ПРОЧИТАТЬ ЗАКЛИНАНИЕ ✨', go: 'final'}] },
-        'final': { file: S.final, win: true, color: '#ffd700' }
+    vid.onerror = () => {
+      vid.src = s.win ? V_WIN : V_LOOP;
+      vid.loop = !!s.loop;
+      vid.play().catch(()=>{});
+      if(!s.loop){
+        clearTimeout(videoTimeout);
+        videoTimeout = setTimeout(()=>onVideoEnd(s), 2500);
+      }
     };
 
-    function showRules() {
-        const input = document.getElementById('username');
-        if (!input.value) { alert("Введи имя!"); return; }
-        userName = input.value;
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('rulesScreen').classList.remove('hidden');
+    vid.play().catch(() => {
+      if(s.loop && s.btns) showBtns(s);
+      if(!s.loop){
+        clearTimeout(videoTimeout);
+        videoTimeout = setTimeout(()=>onVideoEnd(s), 2000);
+      }
+    });
+
+    if(s.loop && s.btns){
+      showBtns(s);
+    }else if(!s.loop){
+      videoTimeout = setTimeout(()=>onVideoEnd(s), 6000);
     }
 
-    function startActualGame() {
-        sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
-        document.getElementById('rulesScreen').classList.add('hidden');
-        document.getElementById('inventory').style.display = 'block';
-        playScene('intro');
-        setTimeout(() => playScene('lift'), 4000); 
+    if(s.lockAlert){
+      alert("Нужно собрать все строчки!");
+    }
+  }
+
+  function onVideoEnd(s){
+    clearTimeout(videoTimeout);
+
+    if(s.quizAct){
+      openQuiz(s.quizAct, s.afterQuizReturn || inferReturnScene(s.quizAct));
+      return;
     }
 
-    function playScene(key) {
-        clearTimeout(videoTimeout); // Сброс таймера
-        const s = scenes[key];
-        ui.innerHTML = '';
-        dialog.classList.add('hidden');
-        fallback.style.background = s.color || '#333';
-        fallback.innerHTML = "СЦЕНА: " + key.toUpperCase();
-        
-        let src = s.file;
-        if (!src.includes('mp4')) src = V_LOOP; // Тестовое видео
-        vid.src = src.includes('http') ? src : src; 
-        if (!s.file.includes('http')) vid.src = s.win ? V_WIN : V_LOOP; 
+    if(s.next) playScene(s.next);
+    if(s.win) showWin();
+    if(s.btns) showBtns(s);
+  }
 
-        vid.loop = s.loop || false;
-        
-        // --- БЕТОННАЯ ЗАЩИТА ---
-        vid.onended = () => { clearTimeout(videoTimeout); onVideoEnd(s); };
-        
-        // Запускаем видео
-        vid.play().catch(() => { 
-            // Если автоплей заблокирован - сразу переходим
-            if(!s.loop) setTimeout(() => onVideoEnd(s), 1000); 
-            else showBtns(s);
-        });
+  function inferReturnScene(act){
+    if(act === "happy" || act === "gen" || act === "client") return "ou_hub";
+    if(act === "it") return "enter_it";
+    if(act === "fd") return "enter_fd";
+    if(act === "sales") return "sales_in";
+    if(act === "getit") return "getit_in";
+    if(act === "vnedr") return "vnedr_in";
+    return "ou_hub";
+  }
 
-        // Если видео играет, но это ЛУП (меню) -> показываем кнопки сразу
-        if (s.loop) {
-            showBtns(s);
-        } else {
-            // Если видео перехода -> ждем конца, но ставим таймер на всякий случай
-            videoTimeout = setTimeout(() => onVideoEnd(s), 4000); // 4 сек макс
+  function showBtns(s){
+    ui.innerHTML = "";
+    ui.classList.remove("hidden");
+    s.btns.forEach(b=>{
+      const btn = document.createElement("button");
+      btn.innerText = b.t;
+      if(b.class) btn.classList.add(b.class);
+
+      btn.onclick = () => {
+        if(b.go) return playScene(b.go);
+
+        if(b.act === "kitchen") return tryKitchen();
+        if(b.act === "puzzle") return openPuzzle();
+        if(b.act) return startTalkCutscene(b.act);
+      };
+      ui.appendChild(btn);
+    });
+  }
+
+  /***********************
+   * LOGIN / RULES
+   ***********************/
+  function showRules(){
+    const input = document.getElementById("username");
+    if(!input.value.trim()){
+      alert("Введи имя!");
+      return;
+    }
+    userName = input.value.trim();
+    saveState();
+
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("rulesScreen").classList.remove("hidden");
+  }
+
+  function startActualGame(){
+    sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
+    document.getElementById("rulesScreen").classList.add("hidden");
+    document.getElementById("inventory").style.display = "block";
+
+    // пролог 4 сек — как ты задумывала
+    playScene("intro");
+    setTimeout(()=>playScene("lift"), 4000);
+  }
+
+  /***********************
+   * TALK CUTSCENES -> QUIZ
+   ***********************/
+  function startTalkCutscene(act){
+    ui.classList.add("hidden");
+    dialog.classList.add("hidden");
+
+    const talkMap = {
+      happy: "talk_happy",
+      client: "talk_client",
+      gen: "talk_gen",
+      it: "talk_it",
+      fd: "talk_fd",
+      sales: "talk_sales",
+      getit: "talk_getit",
+      vnedr: "talk_vnedr"
+    };
+    const key = talkMap[act];
+    if(!key){
+      openQuiz(act, inferReturnScene(act));
+      return;
+    }
+    playScene(key);
+  }
+
+  function openQuiz(act, returnScene){
+    const data = ACTS[act];
+    if(!data){
+      alert("Ошибка: нет данных викторины.");
+      playScene(returnScene || "ou_hub");
+      return;
+    }
+
+    ui.classList.add("hidden");
+    dialog.classList.remove("hidden");
+
+    const already = collected.has(data.lineId);
+
+    document.getElementById("dialog-content").innerHTML = `
+      <div class="question"><b>${data.speaker}:</b> ${data.q}</div>
+      <div style="margin-top:10px;color:#aaa;font-size:.9rem;">
+        Выбери правильный ответ, чтобы получить строку заклинания.
+      </div>
+      ${already ? `<div style="margin-top:10px;color:#7cff7c;font-weight:700;">У тебя уже есть эта строка ✅</div>` : ``}
+    `;
+
+    const dBtns = document.getElementById("dialog-buttons");
+    dBtns.innerHTML = "";
+
+    data.options.forEach((opt, idx)=>{
+      const b = document.createElement("button");
+      b.innerText = opt;
+      b.onclick = () => {
+        if(already){
+          dialog.classList.add("hidden");
+          playScene(returnScene || "ou_hub");
+          return;
         }
 
-        if (s.alert) { alert("Нужно собрать все строчки!"); playScene(s.next); }
-    }
-
-    function onVideoEnd(s) {
-        clearTimeout(videoTimeout);
-        if (s.next) playScene(s.next);
-        if (s.win) showWin();
-        if (s.btns) showBtns(s);
-    }
-
-    function showBtns(s) {
-        ui.innerHTML = '';
-        ui.classList.remove('hidden');
-        s.btns.forEach(b => {
-            const btn = document.createElement('button');
-            btn.innerText = b.t;
-            if (b.class) btn.classList.add(b.class);
-            btn.onclick = () => {
-                if (b.go) playScene(b.go);
-                if (b.act === 'kitchen') tryKitchen();
-                else if (b.act) startDialog(b.act);
-            };
-            ui.appendChild(btn);
-        });
-    }
-
-    const ACTS = {
-        'happy': { q: "Привет! У тебя есть строчка?", a: "Привет! Да, есть строчка, держи!", vid: 'talk_happy' },
-        'client': { q: "Привет! Собираю заклинание.", a: "Клиенты довольны, и ты будешь доволен. Держи!", vid: 'talk_client' },
-        'gen': { q: "Привет! Есть кусочек заклинания?", a: "У нас всё по счету. Вот твоя строчка.", vid: 'talk_gen' },
-        'it': { q: "Привет! Сервер в норме? Нужна строчка.", a: "Сервер работает, строчка готова. Забирай.", vid: 'talk_it' },
-        'fd': { q: "Здравствуйте! Бюджет позволяет дать строчку?", a: "Бюджет на магию утвержден. Вот заклинание.", vid: 'talk_fd' },
-        'sales': { q: "Привет! Как успехи?", a: "Мы тут рекорды бьем! А вот и твоя часть.", vid: 'talk_sales' },
-        'getit': { q: "Привет! Код написан?", a: "Код написан, багов нет. Держи.", vid: 'talk_getit' },
-        'vnedr': { q: "Привет! Всё настроено?", a: "Всё настроено. Забирай строчку.", vid: 'talk_vnedr' }
-    };
-
-    function startDialog(act) {
-        const data = ACTS[act];
-        const key = data.vid;
-        const s = scenes[key];
-        
-        ui.classList.add('hidden');
-        dialog.classList.remove('hidden');
-        document.getElementById('dialog-content').innerHTML = `
-            <div class="question">Вы: ${data.q}</div>
-            <div class="answer">Сотрудник: ${data.a}</div>
-        `;
-        const dBtns = document.getElementById('dialog-buttons');
-        dBtns.innerHTML = '';
-        
-        const b1 = document.createElement('button');
-        b1.innerText = "Взять строчку";
-        if (collected.has(s.id)) { b1.innerText = "Уже есть"; b1.disabled = true; b1.style.opacity = 0.5; }
-        else b1.onclick = () => playItemVid(s);
-        
-        const b2 = document.createElement('button');
-        b2.innerText = "Назад"; b2.className = 'back-btn';
-        b2.onclick = () => { 
-            dialog.classList.add('hidden'); 
-            if (s.exit) playScene(s.exit); 
-            else playScene('ou_hub');
-        };
-        dBtns.append(b1, b2);
-    }
-
-    function playItemVid(s) {
-        clearTimeout(videoTimeout);
-        dialog.classList.add('hidden');
-        fallback.innerHTML = "ВИДЕО ДИАЛОГ";
-        
-        vid.src = V_LOOP; // В реале s.file
-        if (!s.file.includes('http')) vid.src = V_LOOP;
-
-        vid.loop = false;
-        vid.play().catch(() => {});
-        
-        // --- ГЛАВНЫЙ ФИКС: НЕ ЖДЕМ КОНЦА ВИДЕО ---
-        // Сразу ставим таймер на показ свитка (2 сек), игнорируя onended, если видео зациклено
-        setTimeout(() => showScroll(s.id, s.exit), 2000);
-    }
-
-    function showScroll(id, exitKey) {
-        document.getElementById('scrollPopup').classList.remove('hidden');
-        document.getElementById('scrollLineText').innerText = POEM_LINES[id];
-        window.nextKey = exitKey || 'ou_hub';
-        if (!collected.has(id)) {
-            collected.add(id);
-            document.getElementById('count').innerText = collected.size;
-            sendTg(`📜 ${userName} нашел строчку #${id}`);
+        const ok = (idx === data.correct);
+        if(ok){
+          dialog.classList.add("hidden");
+          grantLine(data.lineId, returnScene || "ou_hub");
+        }else{
+          b.style.opacity = .55;
+          b.disabled = true;
+          const msg = document.createElement("div");
+          msg.style.marginTop = "10px";
+          msg.style.color = "#ffb3b3";
+          msg.style.fontWeight = "700";
+          msg.innerText = "Не-а 😅 Попробуй другой вариант!";
+          dBtns.appendChild(msg);
         }
-    }
+      };
+      dBtns.appendChild(b);
+    });
 
-    function closeScroll() {
-        document.getElementById('scrollPopup').classList.add('hidden');
-        playScene(window.nextKey);
-    }
+    const back = document.createElement("button");
+    back.innerText = "Назад";
+    back.className = "back-btn";
+    back.onclick = () => {
+      dialog.classList.add("hidden");
+      playScene(returnScene || "ou_hub");
+    };
+    dBtns.appendChild(back);
+  }
 
-    function tryKitchen() {
-        if (collected.size >= 8) playScene('kitch_open');
-        else playScene('kitch_lock');
+  function grantLine(id, returnKey){
+    if(!collected.has(id)){
+      collected.add(id);
+      document.getElementById("count").innerText = collected.size;
+      updateEffects();
+      saveState();
+      sendTg(`📜 <b>${userName}</b> нашёл(а) строчку #${id}`);
     }
+    document.getElementById("scrollLineText").innerText = POEM_LINES[id];
+    window.nextKey = returnKey || "ou_hub";
+    document.getElementById("scrollPopup").classList.remove("hidden");
+  }
 
-    function showWin() {
-        document.getElementById('winScreen').classList.remove('hidden');
-        sendTg(`🏆 ${userName} ПРОШЕЛ ИГРУ!`);
-    }
+  function closeScroll(){
+    document.getElementById("scrollPopup").classList.add("hidden");
+    playScene(window.nextKey || "ou_hub");
+  }
 
-    function sendTg(text) {
-        fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({chat_id: TG_CHAT_ID, text: text, parse_mode: 'HTML'})
-        }).catch(e=>console.log(e));
+  /***********************
+   * KITCHEN
+   ***********************/
+  function tryKitchen(){
+    if(collected.size >= TOTAL_LINES){
+      playScene("kitch_open");
+    }else{
+      playScene("kitch_lock");
     }
+  }
+
+  /***********************
+   * PUZZLE
+   ***********************/
+  let puzzlePicked = [];
+  let puzzleShuffled = [];
+
+  function openPuzzle(){
+    if(collected.size < TOTAL_LINES){
+      alert("Сначала собери все 8 строк!");
+      return;
+    }
+    document.getElementById("puzzleScreen").classList.remove("hidden");
+    renderPuzzle();
+  }
+
+  function closePuzzle(){
+    document.getElementById("puzzleScreen").classList.add("hidden");
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function renderPuzzle(){
+    const all = Array.from({length:TOTAL_LINES}, (_,i)=>i+1);
+    puzzleShuffled = shuffle(all);
+    puzzlePicked = [];
+
+    document.getElementById("puzzleHint").innerText = puzzleSolved
+      ? "Ранее ты уже решал(а) пазл ✅ Можно решить снова."
+      : "Подсказка: правильный порядок — как читается стихотворение.";
+
+    const pills = document.getElementById("puzzlePills");
+    pills.innerHTML = "";
+    puzzleShuffled.forEach(id=>{
+      const el = document.createElement("span");
+      el.className = "pill";
+      el.dataset.id = id;
+      el.innerText = POEM_LINES[id];
+      el.onclick = ()=> puzzlePick(id);
+      pills.appendChild(el);
+    });
+
+    updatePuzzleOrderUI();
+  }
+
+  function puzzlePick(id){
+    if(puzzlePicked.includes(id)) return;
+    puzzlePicked.push(id);
+
+    document.querySelectorAll(".pill").forEach(p=>{
+      if(Number(p.dataset.id) === id) p.classList.add("used");
+    });
+
+    updatePuzzleOrderUI();
+  }
+
+  function updatePuzzleOrderUI(){
+    const box = document.getElementById("puzzleOrder");
+    if(puzzlePicked.length === 0){
+      box.innerHTML = "<div style='color:#aaa;'>Твой порядок появится здесь…</div>";
+      return;
+    }
+    box.innerHTML = puzzlePicked.map((id, idx)=>(
+      `<div class="orderLine"><b>${idx+1}.</b> ${POEM_LINES[id]}</div>`
+    )).join("");
+  }
+
+  function puzzleReset(){
+    renderPuzzle();
+  }
+
+  function puzzleCheck(){
+    const need = Array.from({length:TOTAL_LINES}, (_,i)=>i+1);
+    if(puzzlePicked.length !== TOTAL_LINES){
+      alert("Нужно выбрать все 8 строк.");
+      return;
+    }
+    const ok = need.every((id, idx)=> puzzlePicked[idx] === id);
+    if(ok){
+      puzzleSolved = true;
+      saveState();
+      closePuzzle();
+      alert("Заклинание собрано! Серость отступает ✨");
+      sendTg(`✨ <b>${userName}</b> собрал(а) заклинание и победил(а) Серость!`);
+      playScene("final");
+    }else{
+      alert("Почти! Но порядок неверный 😅 Попробуй ещё раз.");
+    }
+  }
+
+  /***********************
+   * WIN
+   ***********************/
+  function showWin(){
+    document.getElementById("winScreen").classList.remove("hidden");
+    sendTg(`🏆 <b>${userName}</b> ПРОШЁЛ(А) ИГРУ!`);
+  }
 </script>
 </body>
 </html>
