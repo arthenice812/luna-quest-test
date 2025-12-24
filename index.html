@@ -243,7 +243,7 @@
   const imgPopupClose = document.getElementById("imgPopupClose");
 
   const bgm = document.getElementById("bgm");
-  const MUSIC_VOL = 0.40; // 40% как просила
+  const MUSIC_VOL = 0.20; // 40% как просила
 
   let collected = new Set();
   let userName = "Игрок";
@@ -594,16 +594,27 @@
     vid.onerror = null;
 
     vid.src = resolveVideoSrc(s.file);
-    vid.loop = false;
+
+const is04 = (s.file === LOOP_ONLY_FILE);
+
+// луп только для 04
+vid.loop = is04;
+
+// для остальных сцен ждём конца видео
+
 
     vid.onerror = () => {
       // без диагностики — просто молча оставим чёрный
       // можно при желании alert, но ты просила убрать
     };
 
-    vid.onended = () => onVideoEnd(s);
+    vid.onended = is04 ? null : () => onVideoEnd(s);
 
     vid.play().catch(()=>{});
+
+// исключение: в 04 кнопки сразу
+if (is04 && (s.btns || s.hello)) {
+  showBtns(s);
   }
 
   function onVideoEnd(s){
