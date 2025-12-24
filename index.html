@@ -10,67 +10,60 @@
         body { margin: 0; background: #000; color: #fff; font-family: 'Montserrat', sans-serif; overflow: hidden; height: 100vh; }
         #game-container { position: relative; width: 100%; height: 100%; max-width: 500px; margin: 0 auto; background: #111; }
         
-        /* Видео */
         video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; background: #000; }
         
-        /* Заглушка (цветной фон), чтобы не было черноты */
-        #fallback-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; font-size: 1.5rem; font-weight: bold; text-shadow: 0 2px 5px rgba(0,0,0,0.5); transition: background 0.5s ease; }
+        /* Заглушка (цветной фон) */
+        #fallback-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; font-size: 1.2rem; font-weight: bold; transition: background 0.5s ease; }
 
-        /* Интерфейс */
-        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px 40px; box-sizing: border-box; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%); pointer-events: none; }
+        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px 30px; box-sizing: border-box; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent 60%); pointer-events: none; }
         
-        /* --- НОВЫЙ ДИЗАЙН КНОПОК (ВЕНОК) --- */
+        /* КНОПКИ-ВЕНКИ 🎄 */
         button { 
             pointer-events: auto; 
-            /* Фиолетово-серый прозрачный фон */
             background: rgba(60, 50, 75, 0.85); 
             color: #fff; 
-            /* Рамка "Еловая ветка" */
-            border: 3px solid #2d5a27; 
+            border: 3px solid #2d5a27; /* Зеленая хвоя */
             border-radius: 15px;
-            padding: 15px; 
-            margin: 8px 0; 
+            padding: 14px; 
+            margin: 6px 0; 
             font-weight: bold; 
-            font-size: 1rem; 
+            font-size: 0.95rem; 
             cursor: pointer; 
             text-transform: uppercase; 
-            /* Свечение как игрушки на елке (красный и золотой) */
-            box-shadow: 0 0 5px #2d5a27, 0 0 0 1px #c0392b inset, 0 0 10px rgba(0,0,0,0.5);
+            /* Свечение игрушек */
+            box-shadow: 0 0 5px #2d5a27, 0 0 0 1px #c0392b inset;
             width: 100%; 
             position: relative;
             backdrop-filter: blur(5px);
             transition: transform 0.1s;
         }
-        button:active { transform: scale(0.96); background: rgba(80, 70, 95, 0.95); }
-        /* Декор кнопок */
+        button:active { transform: scale(0.96); }
         button::before { content: '🎄 '; margin-right: 5px; }
 
-        /* Кнопка "Назад" (чуть скромнее) */
+        /* Кнопка НАЗАД */
         button.back-btn { 
-            background: rgba(40, 40, 40, 0.8); 
+            background: rgba(40, 40, 40, 0.9); 
             border-color: #555; 
-            box-shadow: none;
-            font-size: 0.9rem;
-            margin-top: 15px;
+            box-shadow: none; 
+            font-size: 0.9rem; 
+            margin-top: 10px; 
         }
         button.back-btn::before { content: '↩️ '; }
 
-        /* Диалоги */
-        .dialog-box { position: absolute; bottom: 40px; left: 20px; right: 20px; background: rgba(30, 20, 40, 0.95); border: 3px solid #ffd700; border-radius: 20px; padding: 25px; z-index: 20; text-align: center; pointer-events: auto; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
-        .dialog-text { font-size: 1.1rem; margin-bottom: 20px; color: #fff; line-height: 1.4; }
+        /* ДИАЛОГИ И ПРАВИЛА */
+        .modal-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: rgba(20, 15, 30, 0.98); border: 3px solid #ffd700; border-radius: 20px; padding: 30px; z-index: 20; text-align: center; pointer-events: auto; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .modal-text { font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; }
         
-        /* Свиток на весь экран */
+        .dialog-btns { display: flex; flex-direction: column; gap: 10px; }
+
         .scroll-popup { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.5s; }
-        .scroll-content { background: url('https://img.freepik.com/free-photo/old-paper-texture_1194-6729.jpg') center/cover no-repeat, #fff5e6; color: #4a3b2a; padding: 40px 20px; border-radius: 5px; max-width: 80%; text-align: center; box-shadow: 0 0 50px #ffd700; transform: scale(0); animation: scaleIn 0.5s forwards; border: 8px solid #8b4513; position: relative; }
-        .scroll-text { font-family: 'Georgia', serif; font-style: italic; font-size: 1.3rem; margin: 20px 0; font-weight: bold; text-shadow: 0 1px 1px rgba(255,255,255,0.5); }
+        .scroll-content { background: #fff5e6; color: #4a3b2a; padding: 40px 20px; border-radius: 5px; max-width: 80%; text-align: center; box-shadow: 0 0 50px #ffd700; transform: scale(0); animation: scaleIn 0.5s forwards; border: 8px double #8b4513; }
         
-        /* Экраны входа/выхода */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: rgba(10, 5, 20, 0.98); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px; box-sizing: border-box; }
         .hidden { display: none !important; }
         input { padding: 15px; border-radius: 10px; border: 2px solid #2d5a27; background: #222; color: #fff; font-size: 1.1rem; margin-bottom: 20px; width: 100%; box-sizing: border-box; text-align: center; }
         
-        /* Инвентарь */
-        #inventory { position: absolute; top: 20px; right: 20px; z-index: 15; background: rgba(45, 90, 39, 0.8); padding: 8px 15px; border-radius: 20px; border: 2px solid #ffd700; font-weight: bold; color: #fff; display: none; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #inventory { position: absolute; top: 20px; right: 20px; z-index: 15; background: rgba(45, 90, 39, 0.8); padding: 8px 15px; border-radius: 20px; border: 2px solid #ffd700; font-weight: bold; color: #fff; display: none; }
 
         @keyframes scaleIn { from { transform: scale(0) rotate(-10deg); } to { transform: scale(1) rotate(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -80,31 +73,40 @@
 
 <div id="game-container">
     <div id="fallback-screen">ЗАГРУЗКА...</div>
-    
     <video id="vid" playsinline webkit-playsinline muted></video>
-    
     <div id="inventory">📜 Свиток: <span id="count">0</span>/8</div>
     
     <div id="ui" class="ui-layer hidden"></div>
 
-    <div id="dialog" class="dialog-box hidden">
-        <div id="dialog-text" class="dialog-text"></div>
-        <div id="dialog-buttons"></div>
+    <div id="dialog" class="modal-box hidden">
+        <div id="dialog-text" class="modal-text"></div>
+        <div id="dialog-buttons" class="dialog-btns"></div>
+    </div>
+
+    <div id="rulesScreen" class="modal-box hidden" style="z-index: 110;">
+        <h2 style="color:#ffd700; margin-top:0;">ПРАВИЛА ИГРЫ 🎄</h2>
+        <div class="modal-text" style="text-align: left; font-size: 0.95rem;">
+            1. Ты в офисе "Open Service".<br>
+            2. Твоя цель: найти 8 частей заклинания.<br>
+            3. Заходи в кабинеты и говори с сотрудниками.<br>
+            4. Собери всё, чтобы открыть дверь на Кухню!
+        </div>
+        <button onclick="startActualGame()">ПОГНАЛИ! 🚀</button>
     </div>
 
     <div id="scrollPopup" class="scroll-popup hidden">
         <div class="scroll-content">
             <h3 style="margin:0; color:#8b4513">✨ СТРОЧКА НАЙДЕНА ✨</h3>
-            <p class="scroll-text" id="scrollLineText">...</p>
+            <p style="font-family:'Georgia'; font-style:italic; font-size:1.2rem; font-weight:bold; margin:20px 0;" id="scrollLineText">...</p>
             <button onclick="closeScroll()" style="background:#8b4513; border-color:#5a2d0c; box-shadow:none;">В ИНВЕНТАРЬ</button>
         </div>
     </div>
 
     <div id="loginScreen" class="overlay">
         <h1 style="color:#ffd700; text-shadow: 0 0 10px #ff0000;">🎄 ЛУНА v СЕРОСТЬ 🎄</h1>
-        <p>Квест-бродилка по офису.<br>Собери 8 частей заклинания.</p>
+        <p>Интерактивный квест.<br>Собери заклинание, спаси праздник.</p>
         <input type="text" id="username" placeholder="Твое имя">
-        <button onclick="startGame()">НАЧАТЬ ИГРУ</button>
+        <button onclick="showRules()">НАЧАТЬ</button>
     </div>
 
     <div id="winScreen" class="overlay hidden">
@@ -115,7 +117,6 @@
 </div>
 
 <script>
-    // --- ТЕЛЕГРАМ ---
     const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg"; 
     const TG_CHAT_ID = "7524680591";
 
@@ -126,7 +127,6 @@
     let collected = new Set();
     let userName = "Игрок";
 
-    // СТРОКИ СТИХА
     const POEM_LINES = {
         1: "Зажжём сердца, прогоним прочь тоску,",
         2: "Клиент доволен — мы всегда на чеку!",
@@ -138,269 +138,239 @@
         8: "Чтоб чистый код победу нам ковал!"
     };
 
-    // ТЕСТОВЫЕ ВИДЕО (Заменишь на свои файлы v1_intro.mp4 и т.д.)
+    // ФАЙЛЫ ВИДЕО (ЗАГРУЗИ ИХ ИМЕННО С ТАКИМИ ИМЕНАМИ)
+    const S = {
+        intro: '00_intro.mp4', lift: '01_lift_open.mp4',
+        
+        corr_ou: '02_corridor_ou.mp4',
+        enter_ou: '03_enter_ou.mp4', ou_in: '04_ou_inside.mp4', exit_ou: '14_exit_ou.mp4',
+        
+        talk_happy: '05_talk_happy.mp4', talk_client: '06_talk_client.mp4', talk_gen: '07_talk_general.mp4',
+        
+        enter_it: '08_enter_it.mp4', talk_it: '09_talk_it.mp4', exit_it: '10_exit_it.mp4',
+        enter_fd: '11_enter_findir.mp4', talk_fd: '12_talk_findir.mp4', exit_fd: '13_exit_findir.mp4',
+        
+        walk_sales: '15_walk_to_sales.mp4', corr_sales: '16_corridor_sales.mp4',
+        enter_sales: '17_enter_sales.mp4', sales_in: '18_sales_inside.mp4', talk_sales: '19_talk_sales.mp4', exit_sales: '20_exit_sales.mp4',
+
+        walk_getit: '21_walk_to_getit.mp4', corr_getit: '22_corridor_getit.mp4',
+        enter_getit: '23_enter_getit.mp4', getit_in: '24_getit_inside.mp4', talk_getit: '25_talk_getit.mp4', exit_getit: '26_exit_getit.mp4',
+
+        walk_vnedr: '27_walk_to_vnedr.mp4', corr_vnedr: '28_corridor_vnedr.mp4',
+        enter_vnedr: '29_enter_vnedr.mp4', vnedr_in: '30_vnedr_inside.mp4', talk_vnedr: '31_talk_vnedr.mp4', exit_vnedr: '32_exit_vnedr.mp4',
+
+        walk_kitch: '33_walk_to_kitchen.mp4', corr_kitch: '34_corridor_kitchen.mp4',
+        kitch_lock: '35_kitchen_locked.mp4', kitch_open: '36_kitchen_open.mp4', party: '37_party_loop.mp4', final: '38_final.mp4'
+    };
+    
+    // Заглушки для теста
     const V_LOOP = "https://media.istockphoto.com/id/1363653139/video/abstract-background.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
     const V_WIN = "https://media.istockphoto.com/id/1183318283/video/fireworks.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
 
-    /* СЦЕНАРИЙ (ЛИНЕЙНЫЙ)
-       color: Цвет заглушки, пока нет видео
-       next: Куда идет автоматически после видео
-       btns: Кнопки выбора
-    */
     const scenes = {
-        // --- ПРОЛОГ ---
-        'intro': { file: V_LOOP, loop: true, color: '#111' },
-        'start_walk': { file: V_LOOP, next: 'corridor_1_ou', color: '#222' },
+        'intro': { file: S.intro, loop: true, color: '#111' },
+        'lift': { file: S.lift, next: 'c1', color: '#222' },
 
-        // --- ЭТАП 1: У ДВЕРИ ОУ ---
-        'corridor_1_ou': { 
-            file: V_LOOP, loop: true, color: '#2c3e50',
-            btns: [
-                {t: '📂 Зайти в Отдел Учета', go: 'enter_ou'},
-                {t: 'Идти дальше ➡️', go: 'walk_to_sales', class: 'back-btn'}
-            ]
-        },
-
-        // --- ВНУТРИ ОУ (МЕНЮ) ---
-        'enter_ou': { file: V_LOOP, next: 'ou_hub', color: '#c0392b' },
-        'ou_hub': {
-            file: V_LOOP, loop: true, color: '#c0392b',
-            btns: [
-                {t: '✨ Подойти к "Счастью"', act: 'talk_happy'},
-                {t: '👥 Сотрудники Учета', go: 'ou_sub_choice'},
-                {t: '💻 Зайти в IT', go: 'enter_it'},
-                {t: '💼 Зайти к ФинДиру', go: 'enter_findir'},
-                {t: 'Выйти в коридор ↩️', go: 'exit_ou', class: 'back-btn'}
-            ]
-        },
-        // Подменю сотрудников учета (чтобы не было кучи кнопок)
-        'ou_sub_choice': {
-            file: V_LOOP, loop: true, color: '#a93226',
-            btns: [
-                {t: '📄 Внутренний учет', act: 'talk_general'},
-                {t: '🤝 Клиентский отдел', act: 'talk_client'},
-                {t: 'Назад ↩️', go: 'ou_hub', class: 'back-btn'}
-            ]
-        },
-        'exit_ou': { file: V_LOOP, next: 'corridor_1_ou', color: '#333' },
-
-        // ДИАЛОГИ В ОУ
-        'talk_happy': { vid: V_LOOP, id: 1, color: '#e74c3c' },
-        'talk_client': { vid: V_LOOP, id: 2, color: '#e74c3c' },
-        'talk_general': { vid: V_LOOP, id: 3, color: '#e74c3c' },
-
+        // --- ЭТАП 1: ОУ ---
+        'c1': { file: S.corr_ou, loop: true, color: '#2c3e50', btns: [
+            {t: '📂 Зайти в Отдел Учета', go: 'enter_ou'},
+            {t: 'Идти дальше ➡️', go: 'w_sales', class: 'back-btn'}
+        ]},
+        'enter_ou': { file: S.enter_ou, next: 'ou_hub', color: '#c0392b' },
+        'ou_hub': { file: S.ou_in, loop: true, color: '#c0392b', btns: [
+            {t: '✨ Подойти к "Счастью"', act: 'happy'},
+            {t: '👥 Сотрудники Учета', go: 'ou_sub'},
+            {t: '💻 Зайти в IT', go: 'enter_it'},
+            {t: '💼 Зайти к ФинДиру', go: 'enter_fd'},
+            {t: 'Выйти в коридор ↩️', go: 'exit_ou', class: 'back-btn'}
+        ]},
+        // ПОДМЕНЮ ОУ
+        'ou_sub': { file: S.ou_in, loop: true, color: '#a93226', btns: [
+            {t: '📄 Внутренний учет', act: 'gen'},
+            {t: '🤝 Клиентский отдел', act: 'client'},
+            {t: 'Назад в центр ОУ ↩️', go: 'ou_hub', class: 'back-btn'}
+        ]},
+        // ДИАЛОГИ ОУ
+        'talk_happy': { vid: S.talk_happy, id: 1, color: '#e74c3c' },
+        'talk_client': { vid: S.talk_client, id: 2, color: '#e74c3c' },
+        'talk_gen': { vid: S.talk_gen, id: 3, color: '#e74c3c' },
         // IT
-        'enter_it': { file: V_LOOP, loop: false, nextButtons: [{t: '💻 Говорить с IT', act: 'talk_it'}, {t: 'Назад', go:'ou_hub', class:'back-btn'}], color: '#27ae60' },
-        'talk_it': { vid: V_LOOP, id: 4, exit: 'exit_it', color: '#2ecc71' },
-        'exit_it': { file: V_LOOP, next: 'ou_hub', color: '#27ae60' },
+        'enter_it': { file: S.enter_it, loop: true, color: '#27ae60', btns: [{t: '💻 Говорить с IT', act: 'it'}, {t: 'Назад в ОУ', go: 'exit_it', class: 'back-btn'}] },
+        'talk_it': { vid: S.talk_it, id: 4, exit: 'exit_it', color: '#2ecc71' },
+        'exit_it': { file: S.exit_it, next: 'ou_hub', color: '#27ae60' },
+        // FD
+        'enter_fd': { file: S.enter_fd, loop: true, color: '#8e44ad', btns: [{t: '💼 Говорить с ФинДиром', act: 'fd'}, {t: 'Назад в ОУ', go: 'exit_fd', class: 'back-btn'}] },
+        'talk_fd': { vid: S.talk_fd, id: 5, exit: 'exit_fd', color: '#9b59b6' },
+        'exit_fd': { file: S.exit_fd, next: 'ou_hub', color: '#8e44ad' },
+        // ВЫХОД ИЗ ОУ
+        'exit_ou': { file: S.exit_ou, next: 'c1', color: '#333' },
 
-        // FINDIR
-        'enter_findir': { file: V_LOOP, loop: false, nextButtons: [{t: '💼 Говорить с ФинДиром', act: 'talk_findir'}, {t: 'Назад', go:'ou_hub', class:'back-btn'}], color: '#8e44ad' },
-        'talk_findir': { vid: V_LOOP, id: 5, exit: 'exit_findir', color: '#9b59b6' },
-        'exit_findir': { file: V_LOOP, next: 'ou_hub', color: '#8e44ad' },
+        // --- ЭТАП 2: ПРОДАЖИ ---
+        'w_sales': { file: S.walk_sales, next: 'c2', color: '#444' },
+        'c2': { file: S.corr_sales, loop: true, color: '#d35400', btns: [{t: '📈 Зайти в Продажи', go: 'enter_sales'}, {t: 'Идти дальше ➡️', go: 'w_getit', class: 'back-btn'}, {t: '⬅️ Назад к ОУ', go: 'c1', class: 'back-btn'}] },
+        'enter_sales': { file: S.enter_sales, next: 'sales_in', color: '#e67e22' },
+        'sales_in': { file: S.sales_in, loop: true, color: '#e67e22', btns: [{t: '🗣 Поговорить', act: 'sales'}, {t: 'Выйти в коридор', go: 'exit_sales', class: 'back-btn'}] },
+        'talk_sales': { vid: S.talk_sales, id: 6, exit: 'sales_in', color: '#f39c12' },
+        'exit_sales': { file: S.exit_sales, next: 'c2', color: '#d35400' },
 
+        // --- ЭТАП 3: GET IT ---
+        'w_getit': { file: S.walk_getit, next: 'c3', color: '#444' },
+        'c3': { file: S.corr_getit, loop: true, color: '#2980b9', btns: [{t: '💻 Зайти в Get IT', go: 'enter_getit'}, {t: 'Идти дальше ➡️', go: 'w_vnedr', class: 'back-btn'}, {t: '⬅️ Назад к Продажам', go: 'c2', class: 'back-btn'}] },
+        'enter_getit': { file: S.enter_getit, next: 'getit_in', color: '#3498db' },
+        'getit_in': { file: S.getit_in, loop: true, color: '#3498db', btns: [{t: '👨‍💻 Поговорить', act: 'getit'}, {t: 'Выйти в коридор', go: 'exit_getit', class: 'back-btn'}] },
+        'talk_getit': { vid: S.talk_getit, id: 8, exit: 'getit_in', color: '#5dade2' },
+        'exit_getit': { file: S.exit_getit, next: 'c3', color: '#2980b9' },
 
-        // --- ПЕРЕХОД К ПРОДАЖАМ ---
-        'walk_to_sales': { file: V_LOOP, next: 'corridor_2_sales', color: '#444' },
-        'corridor_2_sales': {
-            file: V_LOOP, loop: true, color: '#d35400',
-            btns: [
-                {t: '📈 Зайти в Продажи', go: 'enter_sales'},
-                {t: 'Идти дальше ➡️', go: 'walk_to_getit', class: 'back-btn'},
-                {t: '⬅️ Вернуться к ОУ', go: 'corridor_1_ou', class: 'back-btn'}
-            ]
-        },
-        'enter_sales': { file: V_LOOP, nextButtons: [{t: '🗣 Поговорить', act: 'talk_sales'}, {t: 'Выйти', go:'exit_sales', class:'back-btn'}], color: '#e67e22' },
-        'talk_sales': { vid: V_LOOP, id: 6, exit: 'exit_sales', color: '#f39c12' },
-        'exit_sales': { file: V_LOOP, next: 'corridor_2_sales', color: '#d35400' },
+        // --- ЭТАП 4: ВНЕДРЕНИЕ ---
+        'w_vnedr': { file: S.walk_vnedr, next: 'c4', color: '#444' },
+        'c4': { file: S.corr_vnedr, loop: true, color: '#7f8c8d', btns: [{t: '📦 Зайти во Внедрение', go: 'enter_vnedr'}, {t: 'Идти на Кухню ➡️', go: 'w_kitch', class: 'back-btn'}, {t: '⬅️ Назад к Get IT', go: 'c3', class: 'back-btn'}] },
+        'enter_vnedr': { file: S.enter_vnedr, next: 'vnedr_in', color: '#95a5a6' },
+        'vnedr_in': { file: S.vnedr_in, loop: true, color: '#95a5a6', btns: [{t: '📦 Поговорить', act: 'vnedr'}, {t: 'Выйти в коридор', go: 'exit_vnedr', class: 'back-btn'}] },
+        'talk_vnedr': { vid: S.talk_vnedr, id: 7, exit: 'vnedr_in', color: '#bdc3c7' },
+        'exit_vnedr': { file: S.exit_vnedr, next: 'c4', color: '#7f8c8d' },
 
-
-        // --- ПЕРЕХОД К GET IT ---
-        'walk_to_getit': { file: V_LOOP, next: 'corridor_3_getit', color: '#444' },
-        'corridor_3_getit': {
-            file: V_LOOP, loop: true, color: '#2980b9',
-            btns: [
-                {t: '💻 Зайти в Get IT', go: 'enter_getit'},
-                {t: 'Идти дальше ➡️', go: 'walk_to_vnedr', class: 'back-btn'},
-                {t: '⬅️ Назад к Продажам', go: 'corridor_2_sales', class: 'back-btn'}
-            ]
-        },
-        'enter_getit': { file: V_LOOP, nextButtons: [{t: '👨‍💻 Поговорить', act: 'talk_getit'}, {t: 'Выйти', go:'exit_getit', class:'back-btn'}], color: '#3498db' },
-        'talk_getit': { vid: V_LOOP, id: 8, exit: 'exit_getit', color: '#5dade2' }, // id 8 специально не по порядку, если надо
-        'exit_getit': { file: V_LOOP, next: 'corridor_3_getit', color: '#2980b9' },
-
-
-        // --- ПЕРЕХОД К ВНЕДРЕНИЮ ---
-        'walk_to_vnedr': { file: V_LOOP, next: 'corridor_4_vnedr', color: '#444' },
-        'corridor_4_vnedr': {
-            file: V_LOOP, loop: true, color: '#7f8c8d',
-            btns: [
-                {t: '📦 Зайти во Внедрение', go: 'enter_vnedr'},
-                {t: 'Идти на Кухню ➡️', go: 'walk_to_kitchen', class: 'back-btn'},
-                {t: '⬅️ Назад к Get IT', go: 'corridor_3_getit', class: 'back-btn'}
-            ]
-        },
-        'enter_vnedr': { file: V_LOOP, nextButtons: [{t: '📦 Поговорить', act: 'talk_vnedr'}, {t: 'Выйти', go:'exit_vnedr', class:'back-btn'}], color: '#95a5a6' },
-        'talk_vnedr': { vid: V_LOOP, id: 7, exit: 'exit_vnedr', color: '#bdc3c7' },
-        'exit_vnedr': { file: V_LOOP, next: 'corridor_4_vnedr', color: '#7f8c8d' },
-
-
-        // --- ПЕРЕХОД К КУХНЕ ---
-        'walk_to_kitchen': { file: V_LOOP, next: 'corridor_5_kitchen', color: '#444' },
-        'corridor_5_kitchen': {
-            file: V_LOOP, loop: true, color: '#8e44ad',
-            btns: [
-                {t: '🍽️ Зайти на Кухню', act: 'try_kitchen'},
-                {t: '⬅️ Назад к Внедрению', go: 'corridor_4_vnedr', class: 'back-btn'}
-            ]
-        },
-        'kitchen_locked': { file: V_LOOP, nextButtons: [{t: 'Нужно собрать все строчки!', go: 'corridor_5_kitchen', class:'back-btn'}], color: '#000' },
-        
-        // ФИНАЛ
-        'kitchen_enter': { file: V_WIN, next: 'kitchen_party', color: '#ff00ff' },
-        'kitchen_party': { file: V_WIN, loop: true, btns: [{t: '✨ ПРОЧИТАТЬ ЗАКЛИНАНИЕ ✨', go: 'final_spell'}], color: '#ff00ff' },
-        'final_spell': { file: V_WIN, win: true, color: '#ffd700' }
+        // --- ЭТАП 5: КУХНЯ ---
+        'w_kitch': { file: S.walk_kitch, next: 'c5', color: '#444' },
+        'c5': { file: S.corr_kitch, loop: true, color: '#8e44ad', btns: [{t: '🍽️ Зайти на Кухню', act: 'kitchen'}, {t: '⬅️ Назад к Внедрению', go: 'c4', class: 'back-btn'}] },
+        'kitch_lock': { file: S.kitch_lock, next: 'c5', color: '#000', alert: true },
+        'kitch_open': { file: S.kitch_open, next: 'party', color: '#ff00ff' },
+        'party': { file: S.party, loop: true, color: '#ff00ff', btns: [{t: '✨ ПРОЧИТАТЬ ЗАКЛИНАНИЕ ✨', go: 'final'}] },
+        'final': { file: S.final, win: true, color: '#ffd700' }
     };
 
-    // --- ДВИЖОК ---
-    function startGame() {
+    function showRules() {
         const input = document.getElementById('username');
         if (!input.value) { alert("Введи имя!"); return; }
         userName = input.value;
-        sendTg(`🚀 <b>${userName}</b> начал(а) ТЕСТ игру!`);
-        
         document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('rulesScreen').classList.remove('hidden');
+    }
+
+    function startActualGame() {
+        sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
+        document.getElementById('rulesScreen').classList.add('hidden');
         document.getElementById('inventory').style.display = 'block';
         playScene('intro');
-        setTimeout(() => playScene('start_walk'), 1000); 
+        // Задержка перед лифтом (для пролога)
+        setTimeout(() => playScene('lift'), 4000); 
     }
 
-    function playScene(sceneName) {
-        const scene = scenes[sceneName];
+    function playScene(key) {
+        const s = scenes[key];
         ui.innerHTML = '';
         dialog.classList.add('hidden');
-
-        // Устанавливаем цвет заглушки
-        fallback.style.background = scene.color || '#333';
-        fallback.innerHTML = "СЦЕНА:<br>" + sceneName.toUpperCase();
+        fallback.style.background = s.color || '#333';
+        fallback.innerHTML = "СЦЕНА: " + key.toUpperCase();
         
-        vid.src = scene.file || V_LOOP;
-        vid.loop = scene.loop || false;
+        // В продакшене убрать проверку на includes('http') если все файлы локальные
+        let src = s.file;
+        if (!src.includes('mp4')) src = V_LOOP; // Защита
         
-        vid.play().catch(e => {
-            // Если видео не играет (тест), эмулируем время
-            if (!scene.loop) setTimeout(onVideoEnd, 1500);
-            else showButtons(scene);
-        });
+        vid.src = src.includes('http') ? src : src; 
+        if (!s.file.includes('http')) vid.src = s.win ? V_WIN : V_LOOP; // ТЕСТ РЕЖИМ
 
-        vid.onended = onVideoEnd;
-
-        function onVideoEnd() {
-            if (scene.next) playScene(scene.next);
-            if (scene.win) showWin();
-            if (scene.btns || scene.nextButtons) showButtons(scene);
-        }
-
-        function showButtons(s) {
-            const bList = s.btns || s.nextButtons;
-            if (bList) showUI(bList);
-        }
+        vid.loop = s.loop || false;
+        vid.play().catch(() => { if(!s.loop) setTimeout(() => onVideoEnd(s), 1500); else showBtns(s); });
+        
+        vid.onended = () => onVideoEnd(s);
+        if (s.alert) { alert("Нужно собрать все строчки!"); playScene(s.next); }
     }
 
-    function showUI(buttons) {
+    function onVideoEnd(s) {
+        if (s.next) playScene(s.next);
+        if (s.win) showWin();
+        if (s.btns) showBtns(s);
+    }
+
+    function showBtns(s) {
         ui.innerHTML = '';
         ui.classList.remove('hidden');
-        buttons.forEach(b => {
+        s.btns.forEach(b => {
             const btn = document.createElement('button');
             btn.innerText = b.t;
             if (b.class) btn.classList.add(b.class);
-            
             btn.onclick = () => {
                 if (b.go) playScene(b.go);
-                if (b.act === 'try_kitchen') tryKitchen();
-                if (b.act && b.act.startsWith('talk')) startDialog(b.act);
+                if (b.act === 'kitchen') tryKitchen();
+                else if (b.act) startDialog(b.act);
             };
             ui.appendChild(btn);
         });
     }
 
-    function startDialog(actionKey) {
-        const data = scenes[actionKey]; 
-        ui.classList.add('hidden'); 
+    // ДИАЛОГИ
+    const ACTS = {
+        'happy': {vid: 'talk_happy'}, 'client': {vid: 'talk_client'}, 'gen': {vid: 'talk_gen'},
+        'it': {vid: 'talk_it'}, 'fd': {vid: 'talk_fd'}, 'sales': {vid: 'talk_sales'},
+        'getit': {vid: 'talk_getit'}, 'vnedr': {vid: 'talk_vnedr'}
+    };
+
+    function startDialog(act) {
+        const key = ACTS[act].vid;
+        const s = scenes[key];
+        ui.classList.add('hidden');
         dialog.classList.remove('hidden');
+        document.getElementById('dialog-text').innerText = "Привет! У меня есть строчка. Держи!";
+        const dBtns = document.getElementById('dialog-buttons');
+        dBtns.innerHTML = '';
         
-        document.getElementById('dialog-text').innerText = "Привет! У меня есть строчка заклинания. Держи!";
-        const btnsDiv = document.getElementById('dialog-buttons');
-        btnsDiv.innerHTML = '';
-
-        const btnYes = document.createElement('button');
-        btnYes.innerText = "Взять строчку";
+        const b1 = document.createElement('button');
+        b1.innerText = "Взять";
+        if (collected.has(s.id)) { b1.innerText = "Уже есть"; b1.disabled = true; b1.style.opacity = 0.5; }
+        else b1.onclick = () => playItemVid(s);
         
-        if (collected.has(data.id)) {
-            btnYes.innerText = "Уже есть!";
-            btnYes.style.opacity = "0.5";
-            btnYes.disabled = true;
-        } else {
-            btnYes.onclick = () => playItemVideo(data);
-        }
-
-        const btnNo = document.createElement('button');
-        btnNo.innerText = "Назад";
-        btnNo.classList.add('back-btn');
-        btnNo.onclick = () => {
-            dialog.classList.add('hidden');
-            if (data.exit) playScene(data.exit); 
-            else playScene('ou_hub'); // Фолбэк
+        const b2 = document.createElement('button');
+        b2.innerText = "Назад"; b2.className = 'back-btn';
+        // Возврат: если это диалог IT/FD/Sales - у них есть exit video. 
+        // Если это Happiness/Client/Gen - просто возвращаем меню (ou_hub/ou_sub).
+        b2.onclick = () => { 
+            dialog.classList.add('hidden'); 
+            if (s.exit) playScene(s.exit); // Есть видео выхода
+            else playScene('ou_hub'); // Нет видео выхода (для столов ОУ)
         };
-
-        btnsDiv.appendChild(btnYes);
-        btnsDiv.appendChild(btnNo);
+        
+        dBtns.append(b1, b2);
     }
 
-    function playItemVideo(data) {
+    function playItemVid(s) {
         dialog.classList.add('hidden');
-        fallback.style.background = data.color || '#555';
-        fallback.innerHTML = "ВИДЕО:<br>СОТРУДНИК";
-        
-        vid.src = data.vid || V_LOOP;
-        vid.play().catch(() => setTimeout(() => showScrollPopup(data.id, data.exit || 'ou_hub'), 1500));
-        vid.onended = () => showScrollPopup(data.id, data.exit || 'ou_hub');
+        fallback.innerHTML = "ВИДЕО ДИАЛОГ";
+        vid.src = V_LOOP; vid.loop = false; vid.play(); // ТЕСТ
+        vid.onended = () => showScroll(s.id, s.exit);
     }
 
-    function showScrollPopup(id, exitScene) {
-        const popup = document.getElementById('scrollPopup');
+    function showScroll(id, exitKey) {
+        document.getElementById('scrollPopup').classList.remove('hidden');
         document.getElementById('scrollLineText').innerText = POEM_LINES[id];
-        popup.classList.remove('hidden');
-        window.currentExit = exitScene;
-        
+        // Если exitKey нет (для столов ОУ), возвращаемся в хаб
+        window.nextKey = exitKey || 'ou_hub';
         if (!collected.has(id)) {
             collected.add(id);
             document.getElementById('count').innerText = collected.size;
-            sendTg(`📜 ${userName} нашел строчку #${id} (${collected.size}/8)`);
+            sendTg(`📜 ${userName} нашел строчку #${id}`);
         }
     }
 
     function closeScroll() {
         document.getElementById('scrollPopup').classList.add('hidden');
-        playScene(window.currentExit);
+        playScene(window.nextKey);
     }
 
     function tryKitchen() {
-        if (collected.size >= 8) playScene('kitchen_enter');
-        else playScene('kitchen_locked');
+        if (collected.size >= 8) playScene('kitch_open');
+        else playScene('kitch_lock');
     }
 
     function showWin() {
         document.getElementById('winScreen').classList.remove('hidden');
-        sendTg(`🏆 <b>${userName} ПРОШЕЛ ТЕСТ ИГРУ!</b>`);
+        sendTg(`🏆 ${userName} ПРОШЕЛ ИГРУ!`);
     }
 
     function sendTg(text) {
         fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({chat_id: TG_CHAT_ID, text: text, parse_mode: 'HTML'})
-        }).catch(err => console.log(err));
+        }).catch(e=>console.log(e));
     }
 </script>
 </body>
