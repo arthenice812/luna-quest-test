@@ -11,27 +11,11 @@
 
     body{ margin:0; background:var(--bg); color:#fff; font-family:"Montserrat",sans-serif; overflow:hidden; height:100vh; }
     #game-container{ position:relative; width:100%; height:100%; max-width:500px; margin:0 auto; background:#111; }
-
-    video{
-      width:100%; height:100%;
-      object-fit:cover;
-      position:absolute; inset:0;
-      z-index:1;
-      background:#000;
-    }
+    video{ width:100%; height:100%; object-fit:contain; position:absolute; inset:0; z-index:1; background:#000; }
 
     #fallback-screen{
-      position:absolute; inset:0;
-      z-index:2;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      padding:20px;
-      font-size:1.05rem;
-      font-weight:700;
-      white-space:pre-line;
-      background:rgba(0,0,0,.35);
-      color:#fff;
-      pointer-events:none;
+      position:absolute; inset:0; z-index:0; display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:20px; font-size:1.05rem; font-weight:700; white-space:pre-line; opacity:.92;
     }
 
     .ui-layer{
@@ -43,73 +27,40 @@
     }
 
     button{
-      pointer-events:auto;
-      background:rgba(60,50,75,.9);
-      color:#fff;
-      border:3px solid var(--green);
-      border-radius:15px;
-      padding:14px;
-      margin:6px 0;
-      font-weight:700;
-      font-size:.95rem;
-      cursor:pointer;
-      text-transform:uppercase;
-      box-shadow:0 0 5px var(--green), 0 0 0 1px #c0392b inset;
-      width:100%;
-      backdrop-filter:blur(5px);
+      pointer-events:auto; background:rgba(60,50,75,.9); color:#fff; border:3px solid var(--green); border-radius:15px;
+      padding:14px; margin:6px 0; font-weight:700; font-size:.95rem; cursor:pointer; text-transform:uppercase;
+      box-shadow:0 0 5px var(--green), 0 0 0 1px #c0392b inset; width:100%; backdrop-filter:blur(5px);
       transition:transform .1s, opacity .2s;
     }
     button:active{ transform:scale(.96); }
     button::before{ content:"🎄 "; margin-right:5px; }
 
     button.back-btn{
-      background:rgba(40,40,40,.9);
-      border-color:#555;
-      box-shadow:none;
-      font-size:.9rem;
-      margin-top:10px;
-      text-transform:none;
+      background:rgba(40,40,40,.9); border-color:#555; box-shadow:none; font-size:.9rem; margin-top:10px; text-transform:none;
     }
     button.back-btn::before{ content:"↩️ "; }
 
     button.alt-btn{
-      background:rgba(0,0,0,.55);
-      border-color:var(--gold);
-      box-shadow:0 0 10px rgba(255,215,0,.2);
-      text-transform:none;
+      background:rgba(0,0,0,.55); border-color:var(--gold); box-shadow:0 0 10px rgba(255,215,0,.2); text-transform:none;
     }
     button.alt-btn::before{ content:"✨ "; }
 
     .overlay{
-      position:absolute; inset:0; z-index:100;
-      background:rgba(10,5,20,.72);
-      display:flex; flex-direction:column;
-      justify-content:center; align-items:center;
-      text-align:center;
+      position:absolute; inset:0; z-index:100; background:rgba(10,5,20,.92);
+      display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
       padding:30px; box-sizing:border-box;
     }
     .hidden{ display:none !important; }
 
     input{
-      padding:15px; border-radius:10px;
-      border:2px solid var(--green);
-      background:#222; color:#fff;
-      font-size:1.05rem;
-      margin:12px 0 18px;
-      width:100%;
-      box-sizing:border-box;
-      text-align:center;
+      padding:15px; border-radius:10px; border:2px solid var(--green); background:#222; color:#fff; font-size:1.05rem;
+      margin:12px 0 18px; width:100%; box-sizing:border-box; text-align:center;
     }
 
     #inventory{
       position:absolute; top:18px; right:18px; z-index:15;
-      background:rgba(45,90,39,.8);
-      padding:8px 14px; border-radius:20px;
-      border:2px solid var(--gold);
-      font-weight:700;
-      color:#fff;
-      display:none;
-      box-shadow:0 0 12px rgba(0,0,0,.35);
+      background:rgba(45,90,39,.8); padding:8px 14px; border-radius:20px; border:2px solid var(--gold);
+      font-weight:700; color:#fff; display:none; box-shadow:0 0 12px rgba(0,0,0,.35);
     }
 
     /* POPUP с картинкой (строчка/свиток) */
@@ -120,91 +71,51 @@
       padding:18px;
     }
     #imgPopup.hidden{ display:none !important; }
-    .imgCard{
-      position:relative;
-      max-width:96%;
-      max-height:92%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+    .imgCard{ position:relative; max-width:96%; max-height:92%; display:flex; align-items:center; justify-content:center; }
     .imgCard img{
-      max-width:100%;
-      max-height:88vh;
-      height:auto; width:auto;
-      border-radius:14px;
-      border:3px solid var(--gold);
+      max-width:100%; max-height:88vh; height:auto; width:auto;
+      border-radius:14px; border:3px solid var(--gold);
       box-shadow:0 0 40px rgba(0,0,0,.7);
       background:rgba(255,255,255,.02);
     }
     .closeX{
-      position:absolute;
-      top:-14px; right:-14px;
-      width:42px; height:42px;
-      border-radius:50%;
-      border:2px solid rgba(255,215,0,.9);
-      background:rgba(0,0,0,.7);
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 0 18px rgba(255,215,0,.25);
-      pointer-events:auto;
-      user-select:none;
+      position:absolute; top:-14px; right:-14px; width:42px; height:42px; border-radius:50%;
+      border:2px solid rgba(255,215,0,.9); background:rgba(0,0,0,.7); color:#fff; font-weight:800; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; box-shadow:0 0 18px rgba(255,215,0,.25);
+      pointer-events:auto; user-select:none;
     }
     .closeX:active{ transform:scale(.96); }
 
-    /* Экран правил */
+    /* RULES */
     #rulesModal{
-      width:100%;
-      max-width:440px;
-      background:rgba(20,15,30,.96);
-      border:3px solid var(--gold);
-      border-radius:20px;
-      padding:22px;
-      box-shadow:0 0 30px rgba(0,0,0,.75);
-      text-align:left;
+      width:100%; max-width:440px; background:rgba(20,15,30,.96);
+      border:3px solid var(--gold); border-radius:20px; padding:22px;
+      box-shadow:0 0 30px rgba(0,0,0,.75); text-align:left;
     }
     #rulesModal h2{ margin:0 0 10px; color:var(--gold); text-align:center; }
     #rulesModal .txt{ font-size:.95rem; line-height:1.35; color:#fff; }
     #rulesModal ul{ margin:10px 0 0 18px; padding:0; }
     #rulesModal li{ margin:7px 0; }
 
-    /* ПАЗЛ */
+    /* PUZZLE */
     #puzzleScreen{
       position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      width:90%;
-      background:rgba(20,15,30,.98);
-      border:3px solid var(--gold);
-      border-radius:20px;
-      padding:22px;
-      z-index:120;
-      text-align:center;
-      box-shadow:0 0 30px rgba(0,0,0,.8);
+      width:90%; background:rgba(20,15,30,.98); border:3px solid var(--gold);
+      border-radius:20px; padding:22px; z-index:120; text-align:center; box-shadow:0 0 30px rgba(0,0,0,.8);
     }
     #puzzleScreen .modal-text{ text-align:left; font-size:.95rem; color:#fff; }
     .pill{
-      display:inline-block; padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(255,255,255,.08);
-      margin:6px 6px 0 0;
-      cursor:pointer; user-select:none;
-      font-size:.9rem; line-height:1.2;
+      display:inline-block; padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.08); margin:6px 6px 0 0; cursor:pointer; user-select:none; font-size:.9rem; line-height:1.2;
     }
     .pill:hover{ background:rgba(255,255,255,.14); }
     .pill.used{ opacity:.35; pointer-events:none; text-decoration:line-through; }
     .orderBox{
-      margin-top:12px; padding:12px; border-radius:14px;
-      border:2px dashed rgba(255,215,0,.7);
-      background:rgba(0,0,0,.25);
-      min-height:64px;
-      text-align:left; font-size:.95rem;
+      margin-top:12px; padding:12px; border-radius:14px; border:2px dashed rgba(255,215,0,.7);
+      background:rgba(0,0,0,.25); min-height:64px; text-align:left; font-size:.95rem;
     }
     .orderLine{
-      margin:6px 0; padding:10px 10px; border-radius:12px;
-      background:rgba(255,215,0,.12);
+      margin:6px 0; padding:10px 10px; border-radius:12px; background:rgba(255,215,0,.12);
       border:1px solid rgba(255,215,0,.25);
     }
   </style>
@@ -212,12 +123,13 @@
 
 <body>
 <div id="game-container">
-  <video id="vid" playsinline webkit-playsinline muted preload="auto"></video>
-  <div id="fallback-screen">ЗАГРУЗКА ВИДЕО…</div>
+  <div id="fallback-screen"></div>
+  <video id="vid" playsinline webkit-playsinline muted></video>
 
   <div id="inventory">📜 Свиток: <span id="count">0</span>/8</div>
   <div id="ui" class="ui-layer hidden"></div>
 
+  <!-- POPUP -->
   <div id="imgPopup" class="hidden">
     <div class="imgCard">
       <div class="closeX" id="imgPopupClose">✕</div>
@@ -265,7 +177,7 @@
   <!-- PUZZLE -->
   <div id="puzzleScreen" class="hidden">
     <h2 style="color:var(--gold);margin:0 0 10px;">✨ СОБЕРИ ЗАКЛИНАНИЕ ✨</h2>
-    <div class="modal-text">Нажимай на строки, чтобы выстроить заклинание правильно.</div>
+    <div class="modal-text">Нажимай на строки (они перемешаны), чтобы выстроить заклинание правильно.</div>
     <div id="puzzlePills"></div>
     <div class="orderBox" id="puzzleOrder"></div>
     <div style="display:flex;gap:10px;margin-top:12px;">
@@ -303,29 +215,13 @@
 
   /******** CORE ********/
   const TOTAL_LINES = 8;
-  const STORAGE_KEY = "quest_state_v8_buttons_on_end";
+  const STORAGE_KEY = "quest_state_v9_min_changes";
 
   const VIDEO_BASE = "./videos/";
   const ASSETS_BASE = "./assets/";
 
-  const vid = document.getElementById("vid");
-  const fallback = document.getElementById("fallback-screen");
-  const ui = document.getElementById("ui");
+  const LOOP_ONLY_FILE = "04_ou_hub_loop.mp4"; // луп только этот
 
-  const imgPopup = document.getElementById("imgPopup");
-  const imgPopupImg = document.getElementById("imgPopupImg");
-  const imgPopupClose = document.getElementById("imgPopupClose");
-
-  const bgm = document.getElementById("bgm");
-  const MUSIC_VOL = 0.60;         // <= 60% как просила
-  let bgmStarted = false;
-
-  let collected = new Set();
-  let userName = "Игрок";
-  let currentSceneKey = "attract";
-  let puzzleSolved = false;
-
-  // На этих видео нужен голос (звук видео), музыка должна быть заглушена
   const VOICE_VIDEOS = new Set([
     "06_ou_happy_give.mp4",
     "08_ou_client_give.mp4",
@@ -338,29 +234,21 @@
     "44_final.mp4"
   ]);
 
-  // Луп ТОЛЬКО для 04
-  const LOOP_ONLY_FILE = "04_ou_hub_loop.mp4";
+  const vid = document.getElementById("vid");
+  const fallback = document.getElementById("fallback-screen");
+  const ui = document.getElementById("ui");
 
-  function ensureBGMStarted(){
-    bgm.loop = true;
-    if(!bgm.paused && bgm.currentTime > 0) return;
-    bgm.volume = MUSIC_VOL;
-    const p = bgm.play();
-    if(p && typeof p.then === "function"){
-      p.then(()=>{ bgmStarted = true; }).catch(()=>{ /* autoplay может блокироваться */ });
-    }
-  }
+  const imgPopup = document.getElementById("imgPopup");
+  const imgPopupImg = document.getElementById("imgPopupImg");
+  const imgPopupClose = document.getElementById("imgPopupClose");
 
-  function setAudioModesForFile(file){
-    const isVoice = VOICE_VIDEOS.has(file);
+  const bgm = document.getElementById("bgm");
+  const MUSIC_VOL = 0.40; // 40% как просила
 
-    // Музыка: 0 на voice-сценах, 60% иначе
-    bgm.volume = isVoice ? 0 : MUSIC_VOL;
-
-    // Видео: звук включаем ТОЛЬКО на voice-сценах
-    vid.muted = !isVoice;
-    vid.volume = isVoice ? 1 : 0;
-  }
+  let collected = new Set();
+  let userName = "Игрок";
+  let currentSceneKey = "attract";
+  let puzzleSolved = false;
 
   const LINE_IMG = {
     1: ASSETS_BASE + "line_01.png",
@@ -454,11 +342,8 @@
     final:      "44_final.mp4"
   };
 
-  // IMPORTANT:
-  // - loop ТОЛЬКО если file === 04
-  // - кнопки появляются ТОЛЬКО после конца видео (ended)
   const scenes = {
-    lift: { file:S.lift, next:"c1", color:"#222" },
+    lift:  { file:S.lift, next:"c1", color:"#222" },
 
     c1: { file:S.corr_ou, color:"#2c3e50",
       btns:[
@@ -657,16 +542,26 @@
     location.reload();
   }
 
-  /******** POPUP IMAGES ********/
+  /******** AUDIO ********/
+  function ensureBGMStarted(){
+    bgm.loop = true;
+    // стартуем только от клика пользователя (startActualGame/continueGame)
+    bgm.volume = MUSIC_VOL;
+    bgm.play().catch(()=>{});
+  }
+  function setAudioModesForFile(file){
+    const isVoice = VOICE_VIDEOS.has(file);
+    bgm.volume = isVoice ? 0 : MUSIC_VOL;
+    vid.muted = !isVoice;
+    vid.volume = isVoice ? 1 : 0;
+  }
+
+  /******** POPUP ********/
   let popupNextKey = null;
 
   function openImagePopup(imgSrc, nextKey){
     popupNextKey = nextKey || null;
     imgPopupImg.src = imgSrc;
-    imgPopupImg.onerror = () => {
-      imgPopupImg.onerror = null;
-      alert("Картинка не найдена. Проверь имя файла в папке assets.");
-    };
     imgPopup.classList.remove("hidden");
   }
   function closeImagePopup(){
@@ -677,52 +572,6 @@
   }
   imgPopupClose.onclick = closeImagePopup;
 
-  /******** DIAGNOSTICS ********/
-  function mediaErrorText(err){
-    if(!err) return "Неизвестная ошибка видео.";
-    // 1: aborted 2: network 3: decode 4: src not supported
-    const map = {
-      1: "Воспроизведение прервано (aborted).",
-      2: "Ошибка сети при загрузке видео.",
-      3: "Ошибка декодирования (скорее всего кодек HEVC/H.265). Нужен H.264/AAC.",
-      4: "Формат/кодек не поддерживается (видео не H.264/AAC)."
-    };
-    return map[err.code] || "Ошибка видео: " + err.code;
-  }
-
-  /******** ATTRACT (00 на экране имени) ********/
-  function playAttract(){
-    currentSceneKey = "attract";
-    ui.classList.add("hidden");
-    ui.innerHTML = "";
-
-    fallback.textContent = "ЗАГРУЗКА ВИДЕО 00…";
-    const file = S.intro;
-
-    vid.onended = null;
-    vid.onerror = () => {
-      fallback.textContent =
-        `Проблема с ${file}\n` +
-        `${mediaErrorText(vid.error)}\n` +
-        `Проверь: /videos/${file}`;
-    };
-
-    vid.src = VIDEO_BASE + file;
-    vid.loop = false;           // кнопки не нужны, просто фоновое
-    vid.muted = true;           // автоплей на логине
-    vid.volume = 0;
-
-    vid.onloadeddata = () => { fallback.textContent = ""; };
-
-    // покажем хотя бы первый проход, потом повторим вручную
-    vid.play().then(()=>{}).catch(()=>{});
-    vid.onended = () => {
-      // повторяем, чтобы "как будто луп", но без loop=true
-      vid.currentTime = 0;
-      vid.play().catch(()=>{});
-    };
-  }
-
   /******** VIDEO ENGINE ********/
   function resolveVideoSrc(file){ return VIDEO_BASE + file; }
 
@@ -731,50 +580,41 @@
     currentSceneKey = key;
     saveState();
 
-    ensureBGMStarted();
+    // звук
     setAudioModesForFile(s.file);
 
-    // UI всегда скрываем, покажем ТОЛЬКО после ended
+    // кнопки ТОЛЬКО после окончания видео
     ui.classList.add("hidden");
     ui.innerHTML = "";
 
-    fallback.textContent = `ЗАГРУЗКА: ${s.file}`;
+    fallback.style.background = s.color || "#333";
+    fallback.innerText = "";
 
     vid.onended = null;
     vid.onerror = null;
-    vid.onloadeddata = null;
 
     vid.src = resolveVideoSrc(s.file);
-    vid.loop = false; // <= по требованию: мы НЕ используем loop (кроме "ручного" для 04)
-
-    vid.onloadeddata = () => { fallback.textContent = ""; };
+    vid.loop = false;
 
     vid.onerror = () => {
-      fallback.textContent =
-        `Проблема с ${s.file}\n` +
-        `${mediaErrorText(vid.error)}\n` +
-        `Проверь: /videos/${s.file}`;
+      // без диагностики — просто молча оставим чёрный
+      // можно при желании alert, но ты просила убрать
     };
 
     vid.onended = () => onVideoEnd(s);
 
-    vid.play().catch(() => {
-      // если не смогли autoplay — покажем понятную подсказку
-      fallback.textContent =
-        `Браузер заблокировал авто-воспроизведение.\n` +
-        `Нажми любую кнопку ещё раз.`;
-    });
+    vid.play().catch(()=>{});
   }
 
   function onVideoEnd(s){
-    // give → картинка-строчка
+    // give → показать картинку-строчку
     if(s.give){
       const id = LINE_ID[s.give.lineKey];
       grantLineImage(id, s.give.after);
       return;
     }
 
-    // после 42 → полный свиток
+    // после 42 → полный свиток, закрыли → party
     if(s.showFullScroll){
       openImagePopup(FULL_SCROLL_IMG, "party");
       return;
@@ -792,22 +632,21 @@
       return;
     }
 
-    // показать кнопки (ТОЛЬКО ПОСЛЕ КОНЦА ВИДЕО)
+    // показать кнопки (только после конца)
     if(s.btns || s.hello){
       showBtns(s);
+    }
 
-      // "луп только 04": делаем ручной луп видео 04 уже ПОСЛЕ появления кнопок
-      if(s.file === LOOP_ONLY_FILE){
-        // гоняем в фоне, кнопки остаются
-        try{
-          vid.onended = () => {
-            vid.currentTime = 0;
-            vid.play().catch(()=>{});
-          };
+    // луп только у 04: после появления кнопок начинаем повторять видео в фоне
+    if(s.file === LOOP_ONLY_FILE){
+      try{
+        vid.onended = () => {
           vid.currentTime = 0;
           vid.play().catch(()=>{});
-        }catch(e){}
-      }
+        };
+        vid.currentTime = 0;
+        vid.play().catch(()=>{});
+      }catch(e){}
     }
   }
 
@@ -821,12 +660,12 @@
 
       const btnHello = document.createElement("button");
       btnHello.innerText = already ? "Поздороваться (пересмотреть) 👋" : "Поздороваться 👋";
-      btnHello.onclick = () => { ensureBGMStarted(); playScene(s.hello.give); };
+      btnHello.onclick = () => playScene(s.hello.give);
 
       const btnBack = document.createElement("button");
       btnBack.innerText = "Назад";
       btnBack.className = "back-btn";
-      btnBack.onclick = () => { ensureBGMStarted(); playScene(s.hello.back); };
+      btnBack.onclick = () => playScene(s.hello.back);
 
       ui.append(btnHello, btnBack);
       return;
@@ -837,7 +676,6 @@
       btn.innerText = b.t;
       if(b.class) btn.classList.add(b.class);
       btn.onclick = () => {
-        ensureBGMStarted();
         if(b.go) return playScene(b.go);
         if(b.act === "kitchen") return tryKitchen();
         if(b.act === "puzzle") return openPuzzle();
@@ -941,7 +779,7 @@
     }
   }
 
-  /******** RULES FLOW ********/
+  /******** FLOW ********/
   function showRules(){
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("rulesScreen").classList.remove("hidden");
@@ -966,13 +804,13 @@
     ensureBGMStarted();
     sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
 
-    // после правил — видео 01
     playScene("lift");
   }
 
   function continueGame(){
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("inventory").style.display = "block";
+
     ensureBGMStarted();
     playScene(currentSceneKey === "attract" ? "lift" : currentSceneKey);
     sendTg(`🔁 <b>${userName}</b> продолжил(а) игру.`);
@@ -986,7 +824,12 @@
 
   /******** BOOT ********/
   (function boot(){
-    playAttract();
+    // (00 на фоне логина можно оставить статично — без лупов)
+    vid.src = VIDEO_BASE + S.intro;
+    vid.loop = false;
+    vid.muted = true;
+    vid.volume = 0;
+    vid.play().catch(()=>{});
 
     const state = loadState();
     if(state){
