@@ -14,8 +14,8 @@
     video{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:1; background:#000; }
     #fallback-screen{
       position:absolute; inset:0; z-index:0; display:flex; align-items:center; justify-content:center;
-      text-align:center; padding:20px; font-size:1.1rem; font-weight:700; transition:background .5s ease;
-      white-space:pre-line; opacity:.9;
+      text-align:center; padding:20px; font-size:1.05rem; font-weight:700; transition:background .5s ease;
+      white-space:pre-line; opacity:.92;
     }
 
     #fxNoise{
@@ -166,7 +166,7 @@
 
   <!-- LOGIN -->
   <div id="loginScreen" class="overlay">
-    <h1 style="color:var(--gold);text-shadow:0 0 10px #ff0000;margin:0 0 10px;">🎄 ЛУНА vs СЕРОСТЬ 🎄</h1>
+    <h1 style="color:var(--gold);text-shadow:0 0 10px #ff0000;margin:0 0 10px;">🎄 ЛУНА v СЕРОСТЬ 🎄</h1>
     <p style="margin:0 0 12px;">Интерактивный квест.<br/>Собери заклинание, спаси праздник.</p>
 
     <div id="continueBox" class="hidden" style="width:100%;max-width:420px;background:rgba(20,15,30,.98);border:3px solid var(--gold);border-radius:20px;padding:20px;">
@@ -209,13 +209,12 @@
 </div>
 
 <script>
-  /******** TELEGRAM ********/
+  /******** TELEGRAM (вставлено как просила) ********/
   const TELEGRAM_ENABLED = true;
   const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg";
   const TG_CHAT_ID = "7524680591";
   function sendTg(text){
     if(!TELEGRAM_ENABLED) return;
-    if(!TG_TOKEN || !TG_CHAT_ID) return;
     fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
@@ -225,7 +224,7 @@
 
   /******** CORE ********/
   const TOTAL_LINES = 8;
-  const STORAGE_KEY = "quest_state_v5_music_images";
+  const STORAGE_KEY = "quest_state_v6_local_only";
 
   const vid = document.getElementById("vid");
   const fallback = document.getElementById("fallback-screen");
@@ -246,16 +245,46 @@
   let currentSceneKey = "intro";
   let puzzleSolved = false;
 
-  // Видео локальные
-  const USE_LOCAL_VIDEOS = true;
+  // Только локальные пути — идеально для GitHub Pages
   const VIDEO_BASE = "./videos/";
+  const ASSETS_BASE = "./assets/";
 
-  // Заглушки если файла нет
-  const V_LOOP = "https://media.istockphoto.com/id/1363653139/video/abstract-background.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
-  const V_WIN  = "https://media.istockphoto.com/id/1183318283/video/fireworks.mp4?s=mp4-640x640-is&k=20&c=6a_aQjQGkY3XFjF9p0yqQ1qXqQ4Q4Q4Q4Q4Q4Q4Q4Q=";
+  // Музыка НЕ должна быть слышна на этих видео (как ты написала)
+  const MUSIC_EXCLUDE_FILES = new Set([
+    "06_ou_happy_give.mp4",
+    "08_ou_client_give.mp4",
+    "10_ou_internal_give.mp4",
+    "12_ou_getit_give.mp4",
+    "15_it_give.mp4",
+    "23_sales_give.mp4",
+    "30_getit_give.mp4",
+    "37_vnedr_give.mp4",
+    "44_final.mp4"
+  ]);
+
+  function ensureBGMStarted(){
+    bgm.loop = true;
+    if(!bgm.paused && bgm.currentTime > 0){
+      bgmStarted = true;
+      return;
+    }
+    bgm.volume = MUSIC_VOL;
+    const p = bgm.play();
+    if(p && typeof p.then === "function"){
+      p.then(()=>{ bgmStarted = true; }).catch(()=>{/* autoplay может быть заблокирован до клика */});
+    }
+  }
+
+  function setMusicAudible(flag){
+    // Громкость 0 вместо pause — устойчиво на телефонах
+    bgm.volume = flag ? MUSIC_VOL : 0;
+  }
+
+  function updateMusicForSceneFile(file){
+    setMusicAudible(!MUSIC_EXCLUDE_FILES.has(file));
+  }
 
   // Картинки строк + полный свиток
-  const ASSETS_BASE = "./assets/";
   const LINE_IMG = {
     1: ASSETS_BASE + "line_01.png",
     2: ASSETS_BASE + "line_02.png",
@@ -279,7 +308,6 @@
     8: "Чтоб чистый код победу нам ковал!"
   };
 
-  // Какая сценка даёт какую строку
   const LINE_ID = {
     ou_happy: 1,
     ou_client: 2,
@@ -291,34 +319,6 @@
     getit: 8
   };
 
-  // Музыка НЕ должна играть (быть слышной) на этих видео
-  const MUSIC_EXCLUDE_FILES = new Set([
-    "06_ou_happy_give.mp4",
-    "08_ou_client_give.mp4",
-    "10_ou_internal_give.mp4",
-    "12_ou_getit_give.mp4",
-    "15_it_give.mp4",
-    "23_sales_give.mp4",
-    "30_getit_give.mp4",
-    "37_vnedr_give.mp4",
-    "44_final.mp4"
-  ]);
-
-  function ensureBGMStarted(){
-    if(bgmStarted) return;
-    bgm.volume = MUSIC_VOL;
-    bgm.play().then(()=>{ bgmStarted = true; }).catch(()=>{ /* autoplay blocked */ });
-  }
-  function setMusicAudible(flag){
-    // не пауза, а громкость 0 (надёжнее на телефонах)
-    bgm.volume = flag ? MUSIC_VOL : 0;
-  }
-  function updateMusicForSceneFile(file){
-    if(!file) return setMusicAudible(true);
-    setMusicAudible(!MUSIC_EXCLUDE_FILES.has(file));
-  }
-
-  // Файлы видео
   const S = {
     intro: "00_intro.mp4",
     lift: "01_lift_lobby_leftdoor.mp4",
@@ -377,7 +377,6 @@
     final:      "44_final.mp4"
   };
 
-  // Сцены
   const scenes = {
     intro: { file:S.intro, loop:true, color:"#111" },
     lift:  { file:S.lift, next:"c1", color:"#222" },
@@ -531,9 +530,9 @@
       ]
     },
 
-    kitch_lock: { file:S.kitch_lock, next:"c5", color:"#000", lockAlert:true },
+    kitch_lock: { file:S.kitch_lock, next:"c5", color:"#000" },
 
-    // ВАЖНО: после kitch_open мы показываем свиток-картинку, а уже потом запускаем party
+    // после 42 — показать полный свиток (картинка), закрыли крестиком → сразу 43
     kitch_open: { file:S.kitch_open, color:"#ff00ff", showFullScroll:true },
 
     party: { file:S.party, loop:true, color:"#ff00ff",
@@ -587,11 +586,32 @@
     fxVignette.style.opacity = 0.75 * (1 - p*0.8);
   }
 
+  /******** POPUP IMAGES ********/
+  let popupNextKey = null;
+
+  function openImagePopup(imgSrc, nextKey){
+    setMusicAudible(true); // после "тихих" give-сцен возвращаем слышимость
+    popupNextKey = nextKey || null;
+    imgPopupImg.src = imgSrc;
+
+    imgPopupImg.onerror = () => {
+      imgPopupImg.onerror = null;
+      alert("Картинка не найдена. Проверь имя файла в папке assets.");
+    };
+
+    imgPopup.classList.remove("hidden");
+  }
+  function closeImagePopup(){
+    imgPopup.classList.add("hidden");
+    const next = popupNextKey;
+    popupNextKey = null;
+    if(next) playScene(next);
+  }
+  imgPopupClose.onclick = closeImagePopup;
+
   /******** VIDEO ********/
-  function resolveVideoSrc(file, isWin){
-    if(!file) return isWin ? V_WIN : V_LOOP;
-    if(USE_LOCAL_VIDEOS) return VIDEO_BASE + file;
-    return isWin ? V_WIN : V_LOOP;
+  function resolveVideoSrc(file){
+    return VIDEO_BASE + file; // всегда локально
   }
 
   function playScene(key){
@@ -599,7 +619,6 @@
     currentSceneKey = key;
     saveState();
 
-    // музыка под сцену
     ensureBGMStarted();
     updateMusicForSceneFile(s.file);
 
@@ -611,22 +630,26 @@
     vid.onended = null;
     vid.onerror = null;
 
-    const src = resolveVideoSrc(s.file, !!s.win);
-    vid.src = src;
+    vid.src = resolveVideoSrc(s.file);
     vid.loop = !!s.loop;
 
     vid.onerror = () => {
-      // если файла нет — не ломаем игру
-      vid.src = s.win ? V_WIN : V_LOOP;
-      vid.loop = !!s.loop;
-      vid.play().catch(()=>{});
+      // если вдруг какой-то файл не найден — НЕ ломаем игру
+      try { vid.pause(); } catch(e) {}
+      vid.removeAttribute("src");
+      fallback.innerText = `НЕТ ВИДЕО: ${s.file}\n(проверь папку videos/)`;
+
+      // если есть кнопки/hello — можно продолжать
       if(s.btns || s.hello) showBtns(s);
+
+      // если это переходная сцена с next — авто идём дальше
+      if(s.next && !(s.btns || s.hello)) setTimeout(()=>playScene(s.next), 250);
     };
 
     vid.onended = () => onVideoEnd(key, s);
 
     vid.play().catch(() => {
-      // autoplay видео может быть ограничен — покажем кнопки
+      // autoplay может не сработать — покажем кнопки
       if(s.btns || s.hello) showBtns(s);
     });
 
@@ -638,14 +661,14 @@
   }
 
   function onVideoEnd(key, s){
-    // 1) если give — показать картинку-строчку
+    // give → показать картинку-строчку
     if(s.give){
       const id = LINE_ID[s.give.lineKey];
       grantLineImage(id, s.give.after);
       return;
     }
 
-    // 2) после 42_kitchen_open.mp4 показать полный свиток (картинка), а затем party
+    // после 42_kitchen_open → показать полный свиток, закрыли → party
     if(s.showFullScroll){
       openImagePopup(FULL_SCROLL_IMG, "party");
       return;
@@ -661,7 +684,6 @@
     ui.innerHTML = "";
     ui.classList.remove("hidden");
 
-    // hello-сцены: "Поздороваться" / "Назад"
     if(s.hello){
       const lineId = LINE_ID[s.hello.lineKey];
       const already = collected.has(lineId);
@@ -679,7 +701,6 @@
       return;
     }
 
-    // обычные
     (s.btns || []).forEach(b=>{
       const btn = document.createElement("button");
       btn.innerText = b.t;
@@ -694,36 +715,6 @@
     });
   }
 
-  /******** POPUP IMAGES ********/
-  let popupNextKey = null;
-
-  function openImagePopup(imgSrc, nextKey){
-    // popup должен быть со слышимой музыкой (если текущая сцена была "без музыки")
-    setMusicAudible(true);
-
-    popupNextKey = nextKey || null;
-    imgPopupImg.src = imgSrc;
-
-    // если картинка не найдена — просто покажем заглушку (не ломаем игру)
-    imgPopupImg.onerror = () => {
-      imgPopupImg.onerror = null;
-      // маленькая HTML-заглушка через data URI не делаем — просто оставим пусто, но закроется по Х
-      imgPopupImg.src = "";
-      alert("Картинка не найдена. Проверь имя файла в папке assets.");
-    };
-
-    imgPopup.classList.remove("hidden");
-  }
-
-  function closeImagePopup(){
-    imgPopup.classList.add("hidden");
-    const next = popupNextKey;
-    popupNextKey = null;
-    if(next) playScene(next);
-  }
-
-  imgPopupClose.onclick = closeImagePopup;
-
   /******** LINES via IMAGES ********/
   function grantLineImage(id, returnKey){
     if(!collected.has(id)){
@@ -734,6 +725,14 @@
       sendTg(`📜 <b>${userName}</b> нашёл(а) строчку #${id}`);
     }
     openImagePopup(LINE_IMG[id], returnKey || "ou_hub");
+  }
+
+  /******** MUSIC ********/
+  function setMusicAudible(flag){
+    bgm.volume = flag ? MUSIC_VOL : 0;
+  }
+  function updateMusicForSceneFile(file){
+    setMusicAudible(!MUSIC_EXCLUDE_FILES.has(file));
   }
 
   /******** KITCHEN ********/
@@ -832,7 +831,6 @@
     document.getElementById("inventory").style.display = "block";
     sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
 
-    // старт музыки по клику
     ensureBGMStarted();
     playScene("intro");
   }
@@ -846,6 +844,8 @@
   }
 
   function showWin(){
+    // конец игры → стопаем музыку
+    try { bgm.volume = 0; bgm.pause(); } catch(e) {}
     document.getElementById("winScreen").classList.remove("hidden");
     sendTg(`🏆 <b>${userName}</b> ПРОШЁЛ(А) ИГРУ!`);
   }
