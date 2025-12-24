@@ -11,68 +11,95 @@
 
     body{ margin:0; background:var(--bg); color:#fff; font-family:"Montserrat",sans-serif; overflow:hidden; height:100vh; }
     #game-container{ position:relative; width:100%; height:100%; max-width:500px; margin:0 auto; background:#111; }
-    video{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:1; background:#000; }
-    #fallback-screen{
-      position:absolute; inset:0; z-index:0; display:flex; align-items:center; justify-content:center;
-      text-align:center; padding:20px; font-size:1.05rem; font-weight:700; transition:background .5s ease;
-      white-space:pre-line; opacity:.92;
+
+    video{
+      width:100%; height:100%; object-fit:cover;
+      position:absolute; inset:0; z-index:1; background:#000;
     }
 
-    #fxNoise{
-      position:absolute; inset:0; z-index:5; pointer-events:none; opacity:.55; mix-blend-mode:overlay;
-      background:
-        radial-gradient(circle at 10% 20%, rgba(255,255,255,.08), transparent 40%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,.05), transparent 35%),
-        repeating-linear-gradient(0deg, rgba(255,255,255,.05), rgba(255,255,255,.05) 1px, transparent 1px, transparent 3px);
-      filter:blur(.3px); transition:opacity .35s ease;
-    }
-    #fxVignette{
-      position:absolute; inset:0; z-index:6; pointer-events:none;
-      background:radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.75) 100%);
-      opacity:.75; transition:opacity .35s ease;
+    #fallback-screen{
+      position:absolute; inset:0; z-index:0;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:20px; font-size:1.05rem; font-weight:700;
+      transition:background .5s ease; white-space:pre-line; opacity:.92;
     }
 
     .ui-layer{
-      position:absolute; inset:0; z-index:10; display:flex; flex-direction:column; justify-content:flex-end;
+      position:absolute; inset:0; z-index:10;
+      display:flex; flex-direction:column; justify-content:flex-end;
       padding:20px 30px; box-sizing:border-box;
-      background:linear-gradient(to top, rgba(0,0,0,.9), transparent 60%); pointer-events:none;
+      background:linear-gradient(to top, rgba(0,0,0,.9), transparent 60%);
+      pointer-events:none;
     }
 
     button{
-      pointer-events:auto; background:rgba(60,50,75,.9); color:#fff; border:3px solid var(--green); border-radius:15px;
-      padding:14px; margin:6px 0; font-weight:700; font-size:.95rem; cursor:pointer; text-transform:uppercase;
-      box-shadow:0 0 5px var(--green), 0 0 0 1px #c0392b inset; width:100%;
-      backdrop-filter:blur(5px); transition:transform .1s, opacity .2s;
+      pointer-events:auto;
+      background:rgba(60,50,75,.9);
+      color:#fff;
+      border:3px solid var(--green);
+      border-radius:15px;
+      padding:14px;
+      margin:6px 0;
+      font-weight:700;
+      font-size:.95rem;
+      cursor:pointer;
+      text-transform:uppercase;
+      box-shadow:0 0 5px var(--green), 0 0 0 1px #c0392b inset;
+      width:100%;
+      backdrop-filter:blur(5px);
+      transition:transform .1s, opacity .2s;
     }
     button:active{ transform:scale(.96); }
     button::before{ content:"🎄 "; margin-right:5px; }
 
     button.back-btn{
-      background:rgba(40,40,40,.9); border-color:#555; box-shadow:none; font-size:.9rem; margin-top:10px; text-transform:none;
+      background:rgba(40,40,40,.9);
+      border-color:#555;
+      box-shadow:none;
+      font-size:.9rem;
+      margin-top:10px;
+      text-transform:none;
     }
     button.back-btn::before{ content:"↩️ "; }
 
     button.alt-btn{
-      background:rgba(0,0,0,.55); border-color:var(--gold); box-shadow:0 0 10px rgba(255,215,0,.2); text-transform:none;
+      background:rgba(0,0,0,.55);
+      border-color:var(--gold);
+      box-shadow:0 0 10px rgba(255,215,0,.2);
+      text-transform:none;
     }
     button.alt-btn::before{ content:"✨ "; }
 
     .overlay{
-      position:absolute; inset:0; z-index:100; background:rgba(10,5,20,.98);
-      display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+      position:absolute; inset:0; z-index:100;
+      background:rgba(10,5,20,.92);
+      display:flex; flex-direction:column;
+      justify-content:center; align-items:center;
+      text-align:center;
       padding:30px; box-sizing:border-box;
     }
     .hidden{ display:none !important; }
 
     input{
-      padding:15px; border-radius:10px; border:2px solid var(--green); background:#222; color:#fff; font-size:1.05rem;
-      margin:12px 0 18px; width:100%; box-sizing:border-box; text-align:center;
+      padding:15px; border-radius:10px;
+      border:2px solid var(--green);
+      background:#222; color:#fff;
+      font-size:1.05rem;
+      margin:12px 0 18px;
+      width:100%;
+      box-sizing:border-box;
+      text-align:center;
     }
 
     #inventory{
       position:absolute; top:18px; right:18px; z-index:15;
-      background:rgba(45,90,39,.8); padding:8px 14px; border-radius:20px; border:2px solid var(--gold);
-      font-weight:700; color:#fff; display:none; box-shadow:0 0 12px rgba(0,0,0,.35);
+      background:rgba(45,90,39,.8);
+      padding:8px 14px; border-radius:20px;
+      border:2px solid var(--gold);
+      font-weight:700;
+      color:#fff;
+      display:none;
+      box-shadow:0 0 12px rgba(0,0,0,.35);
     }
 
     /* POPUP с картинкой (строчка/свиток) */
@@ -103,10 +130,8 @@
     }
     .closeX{
       position:absolute;
-      top:-14px;
-      right:-14px;
-      width:42px;
-      height:42px;
+      top:-14px; right:-14px;
+      width:42px; height:42px;
       border-radius:50%;
       border:2px solid rgba(255,215,0,.9);
       background:rgba(0,0,0,.7);
@@ -122,24 +147,55 @@
     }
     .closeX:active{ transform:scale(.96); }
 
+    /* Экран правил */
+    #rulesModal{
+      width:100%;
+      max-width:440px;
+      background:rgba(20,15,30,.96);
+      border:3px solid var(--gold);
+      border-radius:20px;
+      padding:22px;
+      box-shadow:0 0 30px rgba(0,0,0,.75);
+      text-align:left;
+    }
+    #rulesModal h2{ margin:0 0 10px; color:var(--gold); text-align:center; }
+    #rulesModal .txt{ font-size:.95rem; line-height:1.35; color:#fff; }
+    #rulesModal ul{ margin:10px 0 0 18px; padding:0; }
+    #rulesModal li{ margin:7px 0; }
+
     /* ПАЗЛ */
-    #puzzleScreen{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:90%;
-      background:rgba(20,15,30,.98); border:3px solid var(--gold); border-radius:20px; padding:22px;
-      z-index:120; text-align:center; box-shadow:0 0 30px rgba(0,0,0,.8);
+    #puzzleScreen{
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:90%;
+      background:rgba(20,15,30,.98);
+      border:3px solid var(--gold);
+      border-radius:20px;
+      padding:22px;
+      z-index:120;
+      text-align:center;
+      box-shadow:0 0 30px rgba(0,0,0,.8);
     }
     #puzzleScreen .modal-text{ text-align:left; font-size:.95rem; color:#fff; }
     .pill{
-      display:inline-block; padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.25);
-      background:rgba(255,255,255,.08); margin:6px 6px 0 0; cursor:pointer; user-select:none; font-size:.9rem; line-height:1.2;
+      display:inline-block; padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.08);
+      margin:6px 6px 0 0;
+      cursor:pointer; user-select:none;
+      font-size:.9rem; line-height:1.2;
     }
     .pill:hover{ background:rgba(255,255,255,.14); }
     .pill.used{ opacity:.35; pointer-events:none; text-decoration:line-through; }
     .orderBox{
-      margin-top:12px; padding:12px; border-radius:14px; border:2px dashed rgba(255,215,0,.7);
-      background:rgba(0,0,0,.25); min-height:64px; text-align:left; font-size:.95rem;
+      margin-top:12px; padding:12px; border-radius:14px;
+      border:2px dashed rgba(255,215,0,.7);
+      background:rgba(0,0,0,.25);
+      min-height:64px;
+      text-align:left; font-size:.95rem;
     }
     .orderLine{
-      margin:6px 0; padding:10px 10px; border-radius:12px; background:rgba(255,215,0,.12);
+      margin:6px 0; padding:10px 10px; border-radius:12px;
+      background:rgba(255,215,0,.12);
       border:1px solid rgba(255,215,0,.25);
     }
   </style>
@@ -148,10 +204,9 @@
 <body>
 <div id="game-container">
   <div id="fallback-screen">ЗАГРУЗКА...</div>
-  <video id="vid" playsinline webkit-playsinline muted></video>
 
-  <div id="fxNoise"></div>
-  <div id="fxVignette"></div>
+  <!-- ВАЖНО: muted убрали из HTML, управляем в JS -->
+  <video id="vid" playsinline webkit-playsinline></video>
 
   <div id="inventory">📜 Свиток: <span id="count">0</span>/8</div>
   <div id="ui" class="ui-layer hidden"></div>
@@ -166,10 +221,10 @@
 
   <!-- LOGIN -->
   <div id="loginScreen" class="overlay">
-    <h1 style="color:var(--gold);text-shadow:0 0 10px #ff0000;margin:0 0 10px;">🎄 ЛУНА v СЕРОСТЬ 🎄</h1>
+    <h1 style="color:var(--gold);text-shadow:0 0 10px #ff0000;margin:0 0 10px;">🎄 ЛУНА vs СЕРОСТЬ 🎄</h1>
     <p style="margin:0 0 12px;">Интерактивный квест.<br/>Собери заклинание, спаси праздник.</p>
 
-    <div id="continueBox" class="hidden" style="width:100%;max-width:420px;background:rgba(20,15,30,.98);border:3px solid var(--gold);border-radius:20px;padding:20px;">
+    <div id="continueBox" class="hidden" style="width:100%;max-width:420px;background:rgba(20,15,30,.96);border:3px solid var(--gold);border-radius:20px;padding:20px;">
       <div style="text-align:center;margin-bottom:12px;">
         Найден прогресс для <b id="savedName">Игрок</b>.<br/>Продолжить?
       </div>
@@ -180,6 +235,25 @@
     <div id="newGameBox" style="width:100%;max-width:420px;">
       <input type="text" id="username" placeholder="Твоё имя" />
       <button onclick="startGame()">НАЧАТЬ</button>
+    </div>
+  </div>
+
+  <!-- RULES (после "НАЧАТЬ") -->
+  <div id="rulesScreen" class="overlay hidden">
+    <div id="rulesModal">
+      <h2>ПРАВИЛА ИГРЫ 🎄</h2>
+      <div class="txt">
+        Ты в офисе “Open Service”. Серость пытается испортить праздник.
+        Твоя задача — собрать <b>8 частей заклинания</b> и прочитать его на Кухне.
+        <ul>
+          <li>Иди по коридору и заходи в кабинеты.</li>
+          <li>Внутри выбирай, к кому подойти и <b>поздороваться</b>.</li>
+          <li>После “выдачи” ты получишь <b>картинку-строчку</b> (закрывается крестиком).</li>
+          <li>Когда соберёшь все 8 — откроется Кухня и появится полный свиток.</li>
+        </ul>
+      </div>
+      <button onclick="startActualGame()" class="alt-btn" style="margin-top:14px;">ПОГНАЛИ! 🚀</button>
+      <button onclick="backToLogin()" class="back-btn">Назад</button>
     </div>
   </div>
 
@@ -209,7 +283,7 @@
 </div>
 
 <script>
-  /******** TELEGRAM (вставлено как просила) ********/
+  /******** TELEGRAM ********/
   const TELEGRAM_ENABLED = true;
   const TG_TOKEN = "8287827338:AAEaIEkNbJuk_6oFR5lEmLCQ0nObVKvpmsg";
   const TG_CHAT_ID = "7524680591";
@@ -224,13 +298,11 @@
 
   /******** CORE ********/
   const TOTAL_LINES = 8;
-  const STORAGE_KEY = "quest_state_v6_local_only";
+  const STORAGE_KEY = "quest_state_v7_fixed_flow";
 
   const vid = document.getElementById("vid");
   const fallback = document.getElementById("fallback-screen");
   const ui = document.getElementById("ui");
-  const fxNoise = document.getElementById("fxNoise");
-  const fxVignette = document.getElementById("fxVignette");
 
   const imgPopup = document.getElementById("imgPopup");
   const imgPopupImg = document.getElementById("imgPopupImg");
@@ -242,15 +314,14 @@
 
   let collected = new Set();
   let userName = "Игрок";
-  let currentSceneKey = "intro";
+  let currentSceneKey = "attract"; // отдельный режим
   let puzzleSolved = false;
 
-  // Только локальные пути — идеально для GitHub Pages
   const VIDEO_BASE = "./videos/";
   const ASSETS_BASE = "./assets/";
 
-  // Музыка НЕ должна быть слышна на этих видео (как ты написала)
-  const MUSIC_EXCLUDE_FILES = new Set([
+  // На этих видео НЕ слышна музыка, но СЛЫШЕН звук видео (голоса)
+  const VOICE_VIDEOS = new Set([
     "06_ou_happy_give.mp4",
     "08_ou_client_give.mp4",
     "10_ou_internal_give.mp4",
@@ -262,6 +333,18 @@
     "44_final.mp4"
   ]);
 
+  // Для надёжности: на остальных видео — видео без звука
+  function updateAudioModesForFile(file){
+    const isVoice = VOICE_VIDEOS.has(file);
+
+    // Музыку глушим только на voice-видео
+    bgm.volume = isVoice ? 0 : MUSIC_VOL;
+
+    // Видео звук включаем только на voice-видео
+    vid.muted = !isVoice;
+    vid.volume = isVoice ? 1 : 0; // если мутед=false, пусть будет слышно
+  }
+
   function ensureBGMStarted(){
     bgm.loop = true;
     if(!bgm.paused && bgm.currentTime > 0){
@@ -271,17 +354,8 @@
     bgm.volume = MUSIC_VOL;
     const p = bgm.play();
     if(p && typeof p.then === "function"){
-      p.then(()=>{ bgmStarted = true; }).catch(()=>{/* autoplay может быть заблокирован до клика */});
+      p.then(()=>{ bgmStarted = true; }).catch(()=>{/* autoplay может блокироваться до клика */});
     }
-  }
-
-  function setMusicAudible(flag){
-    // Громкость 0 вместо pause — устойчиво на телефонах
-    bgm.volume = flag ? MUSIC_VOL : 0;
-  }
-
-  function updateMusicForSceneFile(file){
-    setMusicAudible(!MUSIC_EXCLUDE_FILES.has(file));
   }
 
   // Картинки строк + полный свиток
@@ -377,20 +451,21 @@
     final:      "44_final.mp4"
   };
 
+  // ui:true = показываем кнопки СРАЗУ (не ждём конца видео)
+  // loop:false для сцен "до кнопки поздороваться"
   const scenes = {
-    intro: { file:S.intro, loop:true, color:"#111" },
-    lift:  { file:S.lift, next:"c1", color:"#222" },
+    lift:  { file:S.lift, next:"c1", loop:false, ui:false, color:"#222" },
 
-    c1: { file:S.corr_ou, loop:true, color:"#2c3e50",
+    c1: { file:S.corr_ou, loop:true, ui:true, color:"#2c3e50",
       btns:[
         { t:"📂 Зайти в Отдел Учёта", go:"enter_ou" },
         { t:"Идти дальше ➡️", go:"w_sales", class:"back-btn" }
       ]
     },
 
-    enter_ou: { file:S.enter_ou, next:"ou_hub", color:"#c0392b" },
+    enter_ou: { file:S.enter_ou, next:"ou_hub", loop:false, ui:false, color:"#c0392b" },
 
-    ou_hub: { file:S.ou_hub, loop:true, color:"#c0392b",
+    ou_hub: { file:S.ou_hub, loop:true, ui:true, color:"#c0392b",
       btns:[
         { t:"🧾 Подойти к Отделу учёта", go:"ou_account" },
         { t:"✨ Подойти к Частичке счастья", go:"ou_happy_hello" },
@@ -399,7 +474,7 @@
       ]
     },
 
-    ou_account: { file:S.ou_hub, loop:true, color:"#a93226",
+    ou_account: { file:S.ou_hub, loop:true, ui:true, color:"#a93226",
       btns:[
         { t:"🤝 Клиентский учёт", go:"ou_client_hello" },
         { t:"📄 Внутренний учёт", go:"ou_internal_hello" },
@@ -408,141 +483,150 @@
       ]
     },
 
-    ou_happy_hello: { file:S.ou_happy_hello, loop:true, color:"#e74c3c",
+    // ДО "Поздороваться" — НЕ loop, но ui=true (кнопки сразу)
+    ou_happy_hello: { file:S.ou_happy_hello, loop:false, ui:true, color:"#e74c3c",
       hello:{ lineKey:"ou_happy", give:"ou_happy_give", back:"ou_hub" }
     },
-    ou_happy_give: { file:S.ou_happy_give, color:"#e74c3c",
+    ou_happy_give: { file:S.ou_happy_give, loop:false, ui:false, color:"#e74c3c",
       give:{ lineKey:"ou_happy", after:"ou_hub" }
     },
 
-    ou_client_hello: { file:S.ou_client_hello, loop:true, color:"#e74c3c",
+    ou_client_hello: { file:S.ou_client_hello, loop:false, ui:true, color:"#e74c3c",
       hello:{ lineKey:"ou_client", give:"ou_client_give", back:"ou_account" }
     },
-    ou_client_give: { file:S.ou_client_give, color:"#e74c3c",
+    ou_client_give: { file:S.ou_client_give, loop:false, ui:false, color:"#e74c3c",
       give:{ lineKey:"ou_client", after:"ou_account" }
     },
 
-    ou_internal_hello: { file:S.ou_internal_hello, loop:true, color:"#e74c3c",
+    ou_internal_hello: { file:S.ou_internal_hello, loop:false, ui:true, color:"#e74c3c",
       hello:{ lineKey:"ou_internal", give:"ou_internal_give", back:"ou_account" }
     },
-    ou_internal_give: { file:S.ou_internal_give, color:"#e74c3c",
+    ou_internal_give: { file:S.ou_internal_give, loop:false, ui:false, color:"#e74c3c",
       give:{ lineKey:"ou_internal", after:"ou_account" }
     },
 
-    ou_getit_hello: { file:S.ou_getit_hello, loop:true, color:"#e74c3c",
+    ou_getit_hello: { file:S.ou_getit_hello, loop:false, ui:true, color:"#e74c3c",
       hello:{ lineKey:"ou_getit", give:"ou_getit_give", back:"ou_account" }
     },
-    ou_getit_give: { file:S.ou_getit_give, color:"#e74c3c",
+    ou_getit_give: { file:S.ou_getit_give, loop:false, ui:false, color:"#e74c3c",
       give:{ lineKey:"ou_getit", after:"ou_account" }
     },
 
-    enter_it: { file:S.enter_it, next:"it_room", color:"#27ae60" },
-    it_room: { file:S.it_hello, loop:true, color:"#27ae60",
+    enter_it: { file:S.enter_it, next:"it_room", loop:false, ui:false, color:"#27ae60" },
+
+    // ДО "Поздороваться" — не loop
+    it_room: { file:S.it_hello, loop:false, ui:true, color:"#27ae60",
       btns:[
         { t:"👋 Подойти и поздороваться", go:"it_hello" },
         { t:"Назад в ОУ ↩️", go:"exit_it", class:"back-btn" }
       ]
     },
-    it_hello: { file:S.it_hello, loop:true, color:"#2ecc71",
+    it_hello: { file:S.it_hello, loop:false, ui:true, color:"#2ecc71",
       hello:{ lineKey:"it", give:"it_give", back:"it_room" }
     },
-    it_give: { file:S.it_give, color:"#2ecc71",
+    it_give: { file:S.it_give, loop:false, ui:false, color:"#2ecc71",
       give:{ lineKey:"it", after:"exit_it" }
     },
-    exit_it: { file:S.exit_it, next:"ou_hub", color:"#27ae60" },
+    exit_it: { file:S.exit_it, next:"ou_hub", loop:false, ui:false, color:"#27ae60" },
 
-    exit_ou: { file:S.exit_ou, next:"c1", color:"#333" },
+    exit_ou: { file:S.exit_ou, next:"c1", loop:false, ui:false, color:"#333" },
 
-    w_sales: { file:S.walk_sales, next:"c2", color:"#444" },
-    c2: { file:S.corr_sales, loop:true, color:"#d35400",
+    w_sales: { file:S.walk_sales, next:"c2", loop:false, ui:false, color:"#444" },
+    c2: { file:S.corr_sales, loop:true, ui:true, color:"#d35400",
       btns:[
         { t:"📈 Зайти в Продажи", go:"enter_sales" },
         { t:"Идти дальше ➡️", go:"w_getit", class:"back-btn" },
         { t:"⬅️ Назад к ОУ", go:"c1", class:"back-btn" }
       ]
     },
-    enter_sales: { file:S.enter_sales, next:"sales_in", color:"#e67e22" },
-    sales_in: { file:S.sales_in, loop:true, color:"#e67e22",
+    enter_sales: { file:S.enter_sales, next:"sales_in", loop:false, ui:false, color:"#e67e22" },
+
+    // ДО "Поздороваться" — не loop
+    sales_in: { file:S.sales_in, loop:false, ui:true, color:"#e67e22",
       btns:[
         { t:"👋 Подойти и поздороваться", go:"sales_hello" },
         { t:"Выйти в коридор ↩️", go:"exit_sales", class:"back-btn" }
       ]
     },
-    sales_hello: { file:S.sales_hello, loop:true, color:"#f39c12",
+    sales_hello: { file:S.sales_hello, loop:false, ui:true, color:"#f39c12",
       hello:{ lineKey:"sales", give:"sales_give", back:"sales_in" }
     },
-    sales_give: { file:S.sales_give, color:"#f39c12",
+    sales_give: { file:S.sales_give, loop:false, ui:false, color:"#f39c12",
       give:{ lineKey:"sales", after:"exit_sales" }
     },
-    exit_sales: { file:S.exit_sales, next:"c2", color:"#d35400" },
+    exit_sales: { file:S.exit_sales, next:"c2", loop:false, ui:false, color:"#d35400" },
 
-    w_getit: { file:S.walk_getit, next:"c3", color:"#444" },
-    c3: { file:S.corr_getit, loop:true, color:"#2980b9",
+    w_getit: { file:S.walk_getit, next:"c3", loop:false, ui:false, color:"#444" },
+    c3: { file:S.corr_getit, loop:true, ui:true, color:"#2980b9",
       btns:[
         { t:"💻 Зайти в Get IT", go:"enter_getit" },
         { t:"Идти дальше ➡️", go:"w_vnedr", class:"back-btn" },
         { t:"⬅️ Назад к Продажам", go:"c2", class:"back-btn" }
       ]
     },
-    enter_getit: { file:S.enter_getit, next:"getit_in", color:"#3498db" },
-    getit_in: { file:S.getit_in, loop:true, color:"#3498db",
+    enter_getit: { file:S.enter_getit, next:"getit_in", loop:false, ui:false, color:"#3498db" },
+
+    // ДО "Поздороваться" — не loop
+    getit_in: { file:S.getit_in, loop:false, ui:true, color:"#3498db",
       btns:[
         { t:"👋 Подойти и поздороваться", go:"getit_hello" },
         { t:"Выйти в коридор ↩️", go:"exit_getit", class:"back-btn" }
       ]
     },
-    getit_hello: { file:S.getit_hello, loop:true, color:"#5dade2",
+    getit_hello: { file:S.getit_hello, loop:false, ui:true, color:"#5dade2",
       hello:{ lineKey:"getit", give:"getit_give", back:"getit_in" }
     },
-    getit_give: { file:S.getit_give, color:"#5dade2",
+    getit_give: { file:S.getit_give, loop:false, ui:false, color:"#5dade2",
       give:{ lineKey:"getit", after:"exit_getit" }
     },
-    exit_getit: { file:S.exit_getit, next:"c3", color:"#2980b9" },
+    exit_getit: { file:S.exit_getit, next:"c3", loop:false, ui:false, color:"#2980b9" },
 
-    w_vnedr: { file:S.walk_vnedr, next:"c4", color:"#444" },
-    c4: { file:S.corr_vnedr, loop:true, color:"#7f8c8d",
+    w_vnedr: { file:S.walk_vnedr, next:"c4", loop:false, ui:false, color:"#444" },
+    c4: { file:S.corr_vnedr, loop:true, ui:true, color:"#7f8c8d",
       btns:[
         { t:"📦 Зайти во Внедрение", go:"enter_vnedr" },
         { t:"Идти на Кухню ➡️", go:"w_kitch", class:"back-btn" },
         { t:"⬅️ Назад к Get IT", go:"c3", class:"back-btn" }
       ]
     },
-    enter_vnedr: { file:S.enter_vnedr, next:"vnedr_in", color:"#95a5a6" },
-    vnedr_in: { file:S.vnedr_in, loop:true, color:"#95a5a6",
+    enter_vnedr: { file:S.enter_vnedr, next:"vnedr_in", loop:false, ui:false, color:"#95a5a6" },
+
+    // ДО "Поздороваться" — не loop
+    vnedr_in: { file:S.vnedr_in, loop:false, ui:true, color:"#95a5a6",
       btns:[
         { t:"👋 Подойти и поздороваться", go:"vnedr_hello" },
         { t:"Выйти в коридор ↩️", go:"exit_vnedr", class:"back-btn" }
       ]
     },
-    vnedr_hello: { file:S.vnedr_hello, loop:true, color:"#bdc3c7",
+    vnedr_hello: { file:S.vnedr_hello, loop:false, ui:true, color:"#bdc3c7",
       hello:{ lineKey:"vnedr", give:"vnedr_give", back:"vnedr_in" }
     },
-    vnedr_give: { file:S.vnedr_give, color:"#bdc3c7",
+    vnedr_give: { file:S.vnedr_give, loop:false, ui:false, color:"#bdc3c7",
       give:{ lineKey:"vnedr", after:"exit_vnedr" }
     },
-    exit_vnedr: { file:S.exit_vnedr, next:"c4", color:"#7f8c8d" },
+    exit_vnedr: { file:S.exit_vnedr, next:"c4", loop:false, ui:false, color:"#7f8c8d" },
 
-    w_kitch: { file:S.walk_kitch, next:"c5", color:"#444" },
-    c5: { file:S.corr_kitch, loop:true, color:"#8e44ad",
+    w_kitch: { file:S.walk_kitch, next:"c5", loop:false, ui:false, color:"#444" },
+    c5: { file:S.corr_kitch, loop:true, ui:true, color:"#8e44ad",
       btns:[
         { t:"🍽️ Зайти на Кухню", act:"kitchen" },
         { t:"⬅️ Назад к Внедрению", go:"c4", class:"back-btn" }
       ]
     },
 
-    kitch_lock: { file:S.kitch_lock, next:"c5", color:"#000" },
+    kitch_lock: { file:S.kitch_lock, next:"c5", loop:false, ui:false, color:"#000" },
 
-    // после 42 — показать полный свиток (картинка), закрыли крестиком → сразу 43
-    kitch_open: { file:S.kitch_open, color:"#ff00ff", showFullScroll:true },
+    // после 42 — показать полный свиток, закрыли → party
+    kitch_open: { file:S.kitch_open, loop:false, ui:false, color:"#ff00ff", showFullScroll:true },
 
-    party: { file:S.party, loop:true, color:"#ff00ff",
+    party: { file:S.party, loop:true, ui:true, color:"#ff00ff",
       btns:[
         { t:"✨ СОБРАТЬ ЗАКЛИНАНИЕ ✨", act:"puzzle", class:"alt-btn" },
         { t:"Назад ↩️", go:"c5", class:"back-btn" }
       ]
     },
 
-    final: { file:S.final, win:true, color:"#ffd700" }
+    final: { file:S.final, loop:false, ui:false, win:true, color:"#ffd700" }
   };
 
   /******** SAVE/LOAD ********/
@@ -566,34 +650,41 @@
   function applyLoadedState(state){
     userName = state.userName || "Игрок";
     collected = new Set(Array.isArray(state.collected) ? state.collected : []);
-    currentSceneKey = state.currentSceneKey || "intro";
+    currentSceneKey = state.currentSceneKey || "c1";
     puzzleSolved = !!state.puzzleSolved;
     document.getElementById("count").innerText = collected.size;
-    updateEffects();
   }
   function resetProgress(){
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   }
 
-  /******** EFFECTS ********/
-  function progressRatio(){ return Math.min(1, collected.size / TOTAL_LINES); }
-  function updateEffects(){
-    const p = progressRatio();
-    const gray = (1 - p);
-    vid.style.filter = `grayscale(${gray}) saturate(${0.25 + p*0.9}) contrast(${0.9 + p*0.15}) brightness(${0.85 + p*0.2})`;
-    fxNoise.style.opacity = 0.55 * (1 - p);
-    fxVignette.style.opacity = 0.75 * (1 - p*0.8);
+  /******** ATTRACT (видео 0 на экране имени) ********/
+  function playAttract(){
+    currentSceneKey = "attract";
+    ui.classList.add("hidden");
+    fallback.style.background = "#111";
+    fallback.innerText = "";
+
+    const file = S.intro;
+    vid.src = VIDEO_BASE + file;
+    vid.loop = true;
+    vid.muted = true;     // чтобы автоплей работал
+    vid.volume = 0;
+    vid.onended = null;
+    vid.onerror = () => {
+      fallback.innerText = "Не найдено видео 00_intro.mp4 в папке /videos";
+    };
+    vid.play().catch(()=>{});
   }
 
   /******** POPUP IMAGES ********/
   let popupNextKey = null;
 
   function openImagePopup(imgSrc, nextKey){
-    setMusicAudible(true); // после "тихих" give-сцен возвращаем слышимость
     popupNextKey = nextKey || null;
-    imgPopupImg.src = imgSrc;
 
+    imgPopupImg.src = imgSrc;
     imgPopupImg.onerror = () => {
       imgPopupImg.onerror = null;
       alert("Картинка не найдена. Проверь имя файла в папке assets.");
@@ -601,6 +692,7 @@
 
     imgPopup.classList.remove("hidden");
   }
+
   function closeImagePopup(){
     imgPopup.classList.add("hidden");
     const next = popupNextKey;
@@ -609,23 +701,24 @@
   }
   imgPopupClose.onclick = closeImagePopup;
 
-  /******** VIDEO ********/
-  function resolveVideoSrc(file){
-    return VIDEO_BASE + file; // всегда локально
-  }
+  /******** VIDEO ENGINE ********/
+  function resolveVideoSrc(file){ return VIDEO_BASE + file; }
 
   function playScene(key){
     const s = scenes[key];
     currentSceneKey = key;
     saveState();
 
+    // управляем звуком (музыка + звук видео)
     ensureBGMStarted();
-    updateMusicForSceneFile(s.file);
+    updateAudioModesForFile(s.file);
 
+    // UI скрываем, если в сцене нет кнопок
+    ui.classList.add("hidden");
     ui.innerHTML = "";
+
     fallback.style.background = s.color || "#333";
-    fallback.innerText = `СЦЕНА: ${key.toUpperCase()}`;
-    updateEffects();
+    fallback.innerText = "";
 
     vid.onended = null;
     vid.onerror = null;
@@ -634,33 +727,26 @@
     vid.loop = !!s.loop;
 
     vid.onerror = () => {
-      // если вдруг какой-то файл не найден — НЕ ломаем игру
       try { vid.pause(); } catch(e) {}
       vid.removeAttribute("src");
-      fallback.innerText = `НЕТ ВИДЕО: ${s.file}\n(проверь папку videos/)`;
+      fallback.innerText = `НЕТ ВИДЕО: ${s.file}\n(проверь папку /videos)`;
 
-      // если есть кнопки/hello — можно продолжать
       if(s.btns || s.hello) showBtns(s);
-
-      // если это переходная сцена с next — авто идём дальше
       if(s.next && !(s.btns || s.hello)) setTimeout(()=>playScene(s.next), 250);
     };
 
-    vid.onended = () => onVideoEnd(key, s);
+    vid.onended = () => onVideoEnd(s);
+
+    // ВАЖНО: если это сцена с UI (меню/hello), кнопки показываем сразу и НЕ ждём конца видео
+    if(s.ui && (s.btns || s.hello)) showBtns(s);
 
     vid.play().catch(() => {
-      // autoplay может не сработать — покажем кнопки
+      // если автоплей не вышел — всё равно покажем кнопки (где нужно)
       if(s.btns || s.hello) showBtns(s);
     });
-
-    if(s.loop && (s.btns || s.hello)) showBtns(s);
-
-    if(key === "intro"){
-      setTimeout(()=>playScene("lift"), 4000);
-    }
   }
 
-  function onVideoEnd(key, s){
+  function onVideoEnd(s){
     // give → показать картинку-строчку
     if(s.give){
       const id = LINE_ID[s.give.lineKey];
@@ -676,7 +762,9 @@
 
     if(s.next) playScene(s.next);
     if(s.win) showWin();
-    if(s.btns || s.hello) showBtns(s);
+
+    // если не ui-сцена, но кнопки должны появиться после конца
+    if(!s.ui && (s.btns || s.hello)) showBtns(s);
   }
 
   /******** UI ********/
@@ -720,19 +808,10 @@
     if(!collected.has(id)){
       collected.add(id);
       document.getElementById("count").innerText = collected.size;
-      updateEffects();
       saveState();
       sendTg(`📜 <b>${userName}</b> нашёл(а) строчку #${id}`);
     }
     openImagePopup(LINE_IMG[id], returnKey || "ou_hub");
-  }
-
-  /******** MUSIC ********/
-  function setMusicAudible(flag){
-    bgm.volume = flag ? MUSIC_VOL : 0;
-  }
-  function updateMusicForSceneFile(file){
-    setMusicAudible(!MUSIC_EXCLUDE_FILES.has(file));
   }
 
   /******** KITCHEN ********/
@@ -821,36 +900,55 @@
     }
   }
 
-  /******** START/BOOT ********/
+  /******** FLOW: START → RULES → VIDEO 1 ********/
+  function showRules(){
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("rulesScreen").classList.remove("hidden");
+  }
+  function backToLogin(){
+    document.getElementById("rulesScreen").classList.add("hidden");
+    document.getElementById("loginScreen").classList.remove("hidden");
+  }
+
   function startGame(){
     const input = document.getElementById("username");
     if(!input.value.trim()) return alert("Введи имя!");
     userName = input.value.trim();
     saveState();
-    document.getElementById("loginScreen").classList.add("hidden");
+    showRules();
+  }
+
+  function startActualGame(){
+    document.getElementById("rulesScreen").classList.add("hidden");
     document.getElementById("inventory").style.display = "block";
+
+    ensureBGMStarted(); // запускаем музыку по клику
     sendTg(`🚀 <b>${userName}</b> начал(а) игру!`);
 
-    ensureBGMStarted();
-    playScene("intro");
+    // ВАЖНО: после правил — сразу видео 1
+    playScene("lift");
   }
 
   function continueGame(){
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("inventory").style.display = "block";
     ensureBGMStarted();
-    playScene(currentSceneKey);
+    playScene(currentSceneKey === "attract" ? "c1" : currentSceneKey);
     sendTg(`🔁 <b>${userName}</b> продолжил(а) игру.`);
   }
 
   function showWin(){
-    // конец игры → стопаем музыку
+    // конец игры — остановим музыку
     try { bgm.volume = 0; bgm.pause(); } catch(e) {}
     document.getElementById("winScreen").classList.remove("hidden");
     sendTg(`🏆 <b>${userName}</b> ПРОШЁЛ(А) ИГРУ!`);
   }
 
+  /******** BOOT ********/
   (function boot(){
+    // 00 видео на фоне логина
+    playAttract();
+
     const state = loadState();
     if(state){
       applyLoadedState(state);
