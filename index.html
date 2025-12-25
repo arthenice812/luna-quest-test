@@ -243,7 +243,7 @@
   const imgPopupClose = document.getElementById("imgPopupClose");
 
   const bgm = document.getElementById("bgm");
-  const MUSIC_VOL = 0.20; // 40% как просила
+  const MUSIC_VOL = 0.40; // ✅ 40%
 
   let collected = new Set();
   let userName = "Игрок";
@@ -522,14 +522,18 @@
       return s;
     }catch(e){ return null; }
   }
+
   function saveState(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      userName,
-      collected: Array.from(collected),
-      currentSceneKey,
-      puzzleSolved
-    }));
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        userName,
+        collected: Array.from(collected),
+        currentSceneKey,
+        puzzleSolved
+      }));
+    }catch(e){}
   }
+
   function applyLoadedState(state){
     userName = state.userName || "Игрок";
     collected = new Set(Array.isArray(state.collected) ? state.collected : []);
@@ -537,18 +541,19 @@
     puzzleSolved = !!state.puzzleSolved;
     document.getElementById("count").innerText = collected.size;
   }
+
   function resetProgress(){
-    localStorage.removeItem(STORAGE_KEY);
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
     location.reload();
   }
 
   /******** AUDIO ********/
   function ensureBGMStarted(){
     bgm.loop = true;
-    // стартуем только от клика пользователя (startActualGame/continueGame)
     bgm.volume = MUSIC_VOL;
     bgm.play().catch(()=>{});
   }
+
   function setAudioModesForFile(file){
     const isVoice = VOICE_VIDEOS.has(file);
     bgm.volume = isVoice ? 0 : MUSIC_VOL;
@@ -564,6 +569,7 @@
     imgPopupImg.src = imgSrc;
     imgPopup.classList.remove("hidden");
   }
+
   function closeImagePopup(){
     imgPopup.classList.add("hidden");
     const next = popupNextKey;
@@ -577,44 +583,39 @@
 
   function playScene(key){
     const s = scenes[key];
+    if(!s) return;
+
     currentSceneKey = key;
     saveState();
 
-    // звук
     setAudioModesForFile(s.file);
 
-    // кнопки ТОЛЬКО после окончания видео
+    // прячем кнопки до окончания видео (кроме 04)
     ui.classList.add("hidden");
     ui.innerHTML = "";
 
     fallback.style.background = s.color || "#333";
     fallback.innerText = "";
 
+    const is04 = (s.file === LOOP_ONLY_FILE);
+
     vid.onended = null;
     vid.onerror = null;
 
+    // ✅ луп только 04
+    vid.loop = is04;
+
     vid.src = resolveVideoSrc(s.file);
-
-const is04 = (s.file === LOOP_ONLY_FILE);
-
-// луп только для 04
-vid.loop = is04;
-
-// для остальных сцен ждём конца видео
-
-
-    vid.onerror = () => {
-      // без диагностики — просто молча оставим чёрный
-      // можно при желании alert, но ты просила убрать
-    };
+    vid.load(); // ✅ важно для мобилок
 
     vid.onended = is04 ? null : () => onVideoEnd(s);
 
     vid.play().catch(()=>{});
 
-// исключение: в 04 кнопки сразу
-if (is04 && (s.btns || s.hello)) {
-  showBtns(s);
+    // ✅ исключение: 04 — кнопки сразу
+    if (is04 && (s.btns || s.hello)) {
+      showBtns(s);
+    }
   }
 
   function onVideoEnd(s){
@@ -643,21 +644,9 @@ if (is04 && (s.btns || s.hello)) {
       return;
     }
 
-    // показать кнопки (только после конца)
+    // показать кнопки после конца
     if(s.btns || s.hello){
       showBtns(s);
-    }
-
-    // луп только у 04: после появления кнопок начинаем повторять видео в фоне
-    if(s.file === LOOP_ONLY_FILE){
-      try{
-        vid.onended = () => {
-          vid.currentTime = 0;
-          vid.play().catch(()=>{});
-        };
-        vid.currentTime = 0;
-        vid.play().catch(()=>{});
-      }catch(e){}
     }
   }
 
@@ -835,11 +824,12 @@ if (is04 && (s.btns || s.hello)) {
 
   /******** BOOT ********/
   (function boot(){
-    // (00 на фоне логина можно оставить статично — без лупов)
+    // 00 на фоне логина
     vid.src = VIDEO_BASE + S.intro;
     vid.loop = false;
     vid.muted = true;
     vid.volume = 0;
+    vid.load();
     vid.play().catch(()=>{});
 
     const state = loadState();
